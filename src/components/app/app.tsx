@@ -19,7 +19,7 @@ export const App = (): JSX.Element => {
     fetch(`${BASE_URL}/ingredients`)
       .then((res) => {
         if (res.ok) {
-          return res.json() as { success: boolean; data: TIngredient[] };
+          return res.json() as Promise<{ success: boolean; data: TIngredient[] }>;
         }
 
         throw new Error(`HTTP ${res.status} ${res.statusText}`);
