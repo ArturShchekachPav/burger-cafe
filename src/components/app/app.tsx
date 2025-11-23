@@ -47,7 +47,7 @@ export const App = (): JSX.Element => {
             Ошибка при загрузке ингредиентов. Пожалуйста, попробуйте позже.
           </p>
         )}
-        {isLoading && <Preloader />}
+        {isLoading && !isError && <Preloader />}
         {!isLoading && !isError && (
           <>
             <BurgerIngredients ingredients={ingredients} />
