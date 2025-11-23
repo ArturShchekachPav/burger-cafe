@@ -1,0 +1,27 @@
+.ingredient_preview {
+  position: relative;
+  cursor: pointer;
+}
+
+.image {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.name {
+  text-align: center;
+}
+
+.counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

@@ -1,7 +1,9 @@
+import type { INGREDIENTS_TYPES } from '@utils/constants';
+
 export type TIngredient = {
   _id: string;
   name: string;
-  type: string;
+  type: (typeof INGREDIENTS_TYPES)[number]['code'];
   proteins: number;
   fat: number;
   carbohydrates: number;

@@ -1,7 +1,62 @@
 .burger_constructor {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  width: 600px;
-  padding-bottom: 20px;
+  margin: 100px 0 90px;
   color: var(--text-primary-color);
+}
+
+.constructor_wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.burger_bun {
+  padding: 0 16px 0 48px;
+}
+
+.burger_ingredients {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0 16px 0 48px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.burger_ingredient {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.drag_button {
+  position: absolute;
+  left: -32px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
+.currency_icon {
+  width: 36px;
+  height: 36px;
+}
+
+.total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 40px;
+}
+
+.total_price {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
