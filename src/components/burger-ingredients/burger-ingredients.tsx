@@ -1,18 +1,21 @@
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
+import { useState, type JSX } from 'react';
 
 import { INGREDIENTS_TYPES } from '@utils/constants';
 
+import { Modal } from '../modal/modal';
+import { IndredientDetails } from './indredient-details/indredient-details';
 import { IngredientsTypeSection } from './ingredients-type-section/ingredients-type-section';
 import { useSectionsScroll } from './use-sections-scroll';
 
-import type { TBurgerIngredientsProps } from '@utils/types';
-import type { JSX } from 'react';
+import type { TBurgerIngredientsProps, TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): JSX.Element => {
+  const [detailIngredient, setDetailIngredient] = useState<TIngredient | null>(null);
   const { activeTab, containerRef, setSectionRef, scrollToSection } =
     useSectionsScroll();
 
@@ -37,10 +40,20 @@ export const BurgerIngredients = ({
       <ul ref={containerRef} className={`${styles.types_list} custom-scroll`}>
         {INGREDIENTS_TYPES.map(({ name, code }) => (
           <li key={code} ref={setSectionRef(code)}>
-            <IngredientsTypeSection name={name} code={code} ingredients={ingredients} />
+            <IngredientsTypeSection
+              setDetailIngredient={setDetailIngredient}
+              name={name}
+              code={code}
+              ingredients={ingredients}
+            />
           </li>
         ))}
       </ul>
+      {detailIngredient && (
+        <Modal title="Детали ингредиента" onClose={() => setDetailIngredient(null)}>
+          <IndredientDetails ingredient={detailIngredient} />
+        </Modal>
+      )}
     </section>
   );
 };

@@ -24,9 +24,11 @@ export function Total(): JSX.Element {
           Оформить заказ
         </Button>
       </div>
-      <Modal isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)}>
-        <OrderDetails />
-      </Modal>
+      {isOrderModalOpen && (
+        <Modal onClose={() => setIsOrderModalOpen(false)}>
+          <OrderDetails />
+        </Modal>
+      )}
     </>
   );
 }

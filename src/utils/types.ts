@@ -35,11 +35,16 @@ export type TIngredientTypeSectionProps = {
   name: string;
   code: string;
   ingredients: TIngredient[];
+  setDetailIngredient: (ingredient: TIngredient) => void;
 };
 
 export type TModalProps = {
-  isOpen: boolean;
   onClose: () => void;
   children: JSX.Element;
   title?: string;
+};
+
+export type TIngredientPreviewProps = {
+  ingredient: TIngredient;
+  onClick: () => void;
 };

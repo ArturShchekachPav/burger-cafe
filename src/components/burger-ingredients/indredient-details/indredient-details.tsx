@@ -6,13 +6,10 @@ import type { JSX } from 'react';
 import styles from './indredient-details.module.css';
 
 export function IndredientDetails({
-  name,
-  image,
-  calories,
-  proteins,
-  carbohydrates,
-  fat,
-}: TIngredient): JSX.Element {
+  ingredient: { name, image, calories, proteins, fat, carbohydrates },
+}: {
+  ingredient: TIngredient;
+}): JSX.Element {
   return (
     <main className={styles.details_container}>
       <img

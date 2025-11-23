@@ -23,7 +23,7 @@ export const BurgerConstructor = ({
             <ConstructorElement
               isLocked
               price={bun.price}
-              text={bun.name}
+              text={`${bun.name} (верх)`}
               thumbnail={bun.image}
               type="top"
             />
@@ -51,7 +51,7 @@ export const BurgerConstructor = ({
             <ConstructorElement
               isLocked
               price={bun.price}
-              text={bun.name}
+              text={`${bun.name} (низ)`}
               thumbnail={bun.image}
               type="bottom"
             />
