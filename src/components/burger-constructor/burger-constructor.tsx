@@ -1,28 +1,19 @@
 import {
   ConstructorElement,
   DragIcon,
-  CurrencyIcon,
-  Button,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
 
-import { Modal } from '@components/modal/modal';
-import { OrderDetails } from '@components/order-details/order-details';
+import { Total } from '@components/burger-constructor/total/total';
 
-import type { TIngredient } from '@utils/types';
+import type { TBurgerConstructorProps } from '@utils/types';
 import type { JSX } from 'react';
 
 import styles from './burger-constructor.module.css';
-
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-};
 
 export const BurgerConstructor = ({
   ingredients,
 }: TBurgerConstructorProps): JSX.Element => {
   const bun = ingredients.find(({ type }) => type === 'bun');
-  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   return (
     <section className={styles.burger_constructor}>
@@ -67,22 +58,7 @@ export const BurgerConstructor = ({
           </footer>
         )}
       </div>
-      <div className={`${styles.total} mt-10`}>
-        <p className={`${styles.total_price} text text_type_main-large`}>
-          610 <CurrencyIcon type="primary" className={styles.currency_icon} />
-        </p>
-        <Button
-          htmlType="button"
-          onClick={() => setIsOrderModalOpen(true)}
-          size="large"
-          type="primary"
-        >
-          Оформить заказ
-        </Button>
-      </div>
-      <Modal isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)}>
-        <OrderDetails />
-      </Modal>
+      <Total />
     </section>
   );
 };

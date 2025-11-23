@@ -23,11 +23,3 @@
   overflow-y: auto;
   list-style: none;
 }
-
-.ingredients_list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px 24px;
-  margin: 0;
-  list-style: none;
-}

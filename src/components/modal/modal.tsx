@@ -2,7 +2,8 @@ import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-import type { JSX, ReactPortal } from 'react';
+import type { TModalProps } from '@/utils/types';
+import type { ReactPortal } from 'react';
 
 import styles from './modal.module.css';
 
@@ -11,12 +12,7 @@ export function Modal({
   onClose,
   children,
   title,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  children: JSX.Element;
-  title?: string;
-}): null | ReactPortal {
+}: TModalProps): null | ReactPortal {
   function onEscapeClose(e: KeyboardEvent): void {
     if (e.key === 'Escape') {
       onClose();

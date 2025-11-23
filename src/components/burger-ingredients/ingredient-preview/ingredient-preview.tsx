@@ -1,7 +1,7 @@
+import { IndredientDetails } from '@/components/burger-ingredients/indredient-details/indredient-details';
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { useState, type JSX } from 'react';
 
-import { IndredientDetails } from '@components/indredient-details/indredient-details';
 import { Modal } from '@components/modal/modal';
 
 import type { TIngredient } from '@utils/types';

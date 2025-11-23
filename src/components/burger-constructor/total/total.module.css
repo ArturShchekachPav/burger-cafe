@@ -1,0 +1,17 @@
+.total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 40px;
+}
+
+.total_price {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.currency_icon {
+  width: 36px;
+  height: 36px;
+}

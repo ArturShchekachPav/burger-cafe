@@ -1,4 +1,5 @@
 import type { INGREDIENTS_TYPES } from '@utils/constants';
+import type { JSX } from 'react';
 
 export type TIngredient = {
   _id: string;
@@ -13,4 +14,32 @@ export type TIngredient = {
   image_large: string;
   image_mobile: string;
   __v: number;
+};
+
+export type TGetIngredientData = { success: boolean; data: TIngredient[] };
+
+export type TBurgerConstructorProps = {
+  ingredients: TIngredient[];
+};
+
+export type TBurgerIngredientsProps = {
+  ingredients: TIngredient[];
+};
+
+export type TIngredientPropertyProps = {
+  label: string;
+  value: number;
+};
+
+export type TIngredientTypeSectionProps = {
+  name: string;
+  code: string;
+  ingredients: TIngredient[];
+};
+
+export type TModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  children: JSX.Element;
+  title?: string;
 };
