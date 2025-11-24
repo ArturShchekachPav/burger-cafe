@@ -1,0 +1,27 @@
+.order_container {
+  width: 100%;
+  max-width: 520px;
+  margin: 60px auto;
+}
+
+.order_text {
+  text-align: center;
+}
+
+.order_status {
+  display: flex;
+  width: 120px;
+  height: 120px;
+  margin-right: auto;
+  margin-left: auto;
+  background-image: url('/graphics.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.status_icon {
+  width: 48px;
+  height: 48px;
+  margin: auto;
+}

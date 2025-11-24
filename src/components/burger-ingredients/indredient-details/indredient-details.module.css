@@ -1,0 +1,22 @@
+.details_container {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.image {
+  width: 100%;
+}
+
+.name {
+  text-align: center;
+}
+
+.properties {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
