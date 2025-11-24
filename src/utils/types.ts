@@ -48,3 +48,11 @@ export type TIngredientPreviewProps = {
   ingredient: TIngredient;
   onClick: () => void;
 };
+
+export type TCreateOprderData = {
+  name: string;
+  order: {
+    number: number;
+  };
+  success: boolean;
+};
