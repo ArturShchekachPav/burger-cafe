@@ -1,5 +1,12 @@
-import { Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useState, type JSX } from 'react';
+import { loadIngredientsThunk } from '@/services/ingredients/actions';
+import { getIngredientsState } from '@/services/ingredients/slice';
+import {
+  getSelectedIngredient,
+  resetSelectedIngredient,
+} from '@/services/selected-ingredient/slice';
+import { useAppDispatch, useAppSelector } from '@/services/store';
+import { Preloader, Tab } from '@krgaa/react-developer-burger-ui-components';
+import { useCallback, useEffect, type JSX } from 'react';
 
 import { INGREDIENTS_TYPES } from '@utils/constants';
 
@@ -8,16 +15,23 @@ import { IndredientDetails } from './indredient-details/indredient-details';
 import { IngredientsTypeSection } from './ingredients-type-section/ingredients-type-section';
 import { useSectionsScroll } from './use-sections-scroll';
 
-import type { TBurgerIngredientsProps, TIngredient } from '@utils/types';
-
 import styles from './burger-ingredients.module.css';
 
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): JSX.Element => {
-  const [detailIngredient, setDetailIngredient] = useState<TIngredient | null>(null);
+export const BurgerIngredients = (): JSX.Element => {
+  const { ingredients, isError, isLoading } = useAppSelector(getIngredientsState);
+  const selectedIngredient = useAppSelector(getSelectedIngredient);
+  const dispatch = useAppDispatch();
+
   const { activeTab, containerRef, setSectionRef, scrollToSection } =
     useSectionsScroll();
+
+  useEffect(() => {
+    void dispatch(loadIngredientsThunk());
+  }, []);
+
+  const handleIngredientDetailClose = useCallback((): void => {
+    dispatch(resetSelectedIngredient());
+  }, [dispatch]);
 
   return (
     <section className={styles.burger_ingredients}>
@@ -37,21 +51,28 @@ export const BurgerIngredients = ({
           ))}
         </ul>
       </nav>
-      <ul ref={containerRef} className={`${styles.types_list} custom-scroll`}>
-        {INGREDIENTS_TYPES.map(({ name, code }) => (
-          <li key={code} ref={setSectionRef(code)}>
-            <IngredientsTypeSection
-              setDetailIngredient={setDetailIngredient}
-              name={name}
-              code={code}
-              ingredients={ingredients}
-            />
-          </li>
-        ))}
-      </ul>
-      {detailIngredient && (
-        <Modal title="Детали ингредиента" onClose={() => setDetailIngredient(null)}>
-          <IndredientDetails ingredient={detailIngredient} />
+      {isLoading && <Preloader />}
+      {isError && (
+        <p className="text text_type_main-default">
+          Ошибка при загрузке ингредиентов. Пожалуйста, попробуйте позже.
+        </p>
+      )}
+      {!isLoading && !isError && (
+        <ul ref={containerRef} className={`${styles.types_list} custom-scroll`}>
+          {INGREDIENTS_TYPES.map(({ name, code }) => (
+            <li key={code} ref={setSectionRef(code)}>
+              <IngredientsTypeSection
+                name={name}
+                code={code}
+                ingredients={ingredients}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+      {selectedIngredient && (
+        <Modal title="Детали ингредиента" onClose={handleIngredientDetailClose}>
+          <IndredientDetails ingredient={selectedIngredient} />
         </Modal>
       )}
     </section>

@@ -1,13 +1,20 @@
 import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
 
+import type { TCreateOrderData } from '@/utils/types';
 import type { JSX } from 'react';
 
 import styles from './order-details.module.css';
 
-export function OrderDetails(): JSX.Element {
+export function OrderDetails({
+  order,
+}: {
+  order: TCreateOrderData['order'];
+}): JSX.Element {
   return (
     <main className={styles.order_container}>
-      <h2 className={`${styles.order_text} mb-8 text text_type_digits-large`}>034536</h2>
+      <h2 className={`${styles.order_text} mb-8 text text_type_digits-large`}>
+        {order.number}
+      </h2>
       <p className={`${styles.order_text} mb-15 text text_type_main-medium`}>
         идентификатор заказа
       </p>

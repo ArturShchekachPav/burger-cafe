@@ -35,7 +35,6 @@ export type TIngredientTypeSectionProps = {
   name: string;
   code: string;
   ingredients: TIngredient[];
-  setDetailIngredient: (ingredient: TIngredient) => void;
 };
 
 export type TModalProps = {
@@ -44,15 +43,18 @@ export type TModalProps = {
   title?: string;
 };
 
-export type TIngredientPreviewProps = {
-  ingredient: TIngredient;
-  onClick: () => void;
-};
-
-export type TCreateOprderData = {
+export type TCreateOrderData = {
   name: string;
   order: {
     number: number;
   };
   success: boolean;
+};
+
+export type TBurgerConstructorIngredient = TIngredient & { uuid: string };
+
+export type TIngredientWithCount = TIngredient & { count?: number };
+
+export type TIngredientPreviewProps = {
+  ingredient: TIngredientWithCount;
 };

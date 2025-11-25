@@ -1,4 +1,4 @@
-import type { TCreateOprderData, TGetIngredientData, TIngredient } from './types';
+import type { TCreateOrderData, TGetIngredientData, TIngredient } from './types';
 
 class Api {
   private baseUrl = 'https://norma.education-services.ru/api';
@@ -22,12 +22,12 @@ class Api {
 
   public createOrder = (
     ingredientsIds: TIngredient['_id'][]
-  ): Promise<TCreateOprderData> => {
+  ): Promise<TCreateOrderData> => {
     return fetch(`${this.baseUrl}/orders`, {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify({ ingredients: ingredientsIds }),
-    }).then(this.cheсkResponse<TCreateOprderData>);
+    }).then(this.cheсkResponse<TCreateOrderData>);
   };
 }
 
