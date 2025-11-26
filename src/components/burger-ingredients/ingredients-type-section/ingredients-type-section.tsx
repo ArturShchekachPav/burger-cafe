@@ -9,7 +9,6 @@ export function IngredientsTypeSection({
   name,
   code,
   ingredients,
-  setDetailIngredient,
 }: TIngredientTypeSectionProps): JSX.Element {
   return (
     <div>
@@ -19,10 +18,7 @@ export function IngredientsTypeSection({
           .filter(({ type }) => type === code)
           .map((ingredient) => (
             <li key={ingredient._id}>
-              <IngredientPreview
-                onClick={() => setDetailIngredient(ingredient)}
-                ingredient={ingredient}
-              />
+              <IngredientPreview ingredient={ingredient} />
             </li>
           ))}
       </ul>

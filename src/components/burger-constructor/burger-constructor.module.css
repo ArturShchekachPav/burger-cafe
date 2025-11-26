@@ -2,7 +2,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin: 100px 0 90px;
+  margin: 0 0 40px;
   color: var(--text-primary-color);
 }
 
@@ -12,10 +12,8 @@
   flex-direction: column;
   gap: 16px;
   overflow: hidden;
-}
-
-.burger_bun {
-  padding: 0 16px 0 48px;
+  border-radius: 20px;
+  transition: border 0.2s ease-in-out;
 }
 
 .burger_ingredients {
@@ -29,22 +27,11 @@
   list-style: none;
 }
 
-.burger_ingredient {
-  position: relative;
+.empty_message {
   display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-}
-
-.drag_button {
-  position: absolute;
-  left: -32px;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 0.7;
-  }
+  text-align: center;
 }
