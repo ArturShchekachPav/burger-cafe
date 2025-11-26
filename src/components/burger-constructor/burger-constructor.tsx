@@ -56,13 +56,11 @@ export const BurgerConstructor = (): JSX.Element => {
         )}
         {ingredients.length > 0 && (
           <ul className={`${styles.burger_ingredients} custom-scroll`}>
-            {ingredients
-              .filter(({ type }) => type !== 'bun')
-              .map((indredient, index) => (
-                <li key={indredient.uuid}>
-                  <DraggableItem ingredient={indredient} index={index} />
-                </li>
-              ))}
+            {ingredients.map((indredient) => (
+              <li key={indredient.uuid}>
+                <DraggableItem ingredient={indredient} />
+              </li>
+            ))}
           </ul>
         )}
         {bun && <Bun bun={bun} type="bottom" />}

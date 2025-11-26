@@ -40,11 +40,35 @@ export const burgerConstructorSlice = createSlice({
 
       state.ingredients = state.ingredients.filter((ing) => ing.uuid !== deleteUuid);
     },
-    moveIngredient(state, action: PayloadAction<{ from: number; to: number }>) {
+    moveIngredient(state, action: PayloadAction<{ from: string; to: string }>) {
       const { from, to } = action.payload;
-      const ingredient = state.ingredients.splice(from, 1)[0];
 
-      state.ingredients.splice(to, 0, ingredient);
+      const fromIndex = state.ingredients.findIndex(({ uuid }) => uuid === from);
+      const toIndex = state.ingredients.findIndex(({ uuid }) => uuid === to);
+
+      if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+        return;
+      }
+
+      const newIngredients = [...state.ingredients];
+
+      if (fromIndex < toIndex) {
+        for (let i = fromIndex; i < toIndex; i++) {
+          [newIngredients[i], newIngredients[i + 1]] = [
+            newIngredients[i + 1],
+            newIngredients[i],
+          ];
+        }
+      } else {
+        for (let i = fromIndex; i > toIndex; i--) {
+          [newIngredients[i], newIngredients[i - 1]] = [
+            newIngredients[i - 1],
+            newIngredients[i],
+          ];
+        }
+      }
+
+      state.ingredients = newIngredients;
     },
   },
   selectors: {
