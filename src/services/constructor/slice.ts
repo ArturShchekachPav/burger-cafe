@@ -1,9 +1,9 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { createOrderThunk } from '../order/actions';
+import { ordersApi } from '../orders/api';
 
-import type { TBurgerConstructorIngredient, TIngredient } from '@/utils/types';
+import type { TBurgerConstructorIngredient, TIngredient } from '@/types/types';
 
 type TBurgerConstructorState = {
   bun: TIngredient | null;
@@ -80,7 +80,7 @@ export const burgerConstructorSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(createOrderThunk.fulfilled, (state) => {
+    builder.addMatcher(ordersApi.endpoints.createOrder.matchFulfilled, (state) => {
       state.bun = null;
       state.ingredients = [];
     });

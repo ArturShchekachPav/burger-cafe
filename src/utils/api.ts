@@ -1,4 +1,4 @@
-import type { TCreateOrderData, TGetIngredientData, TIngredient } from './types';
+import type { TCreateOrderData, TGetIngredientData, TIngredient } from '../types/types';
 
 class Api {
   private baseUrl = 'https://norma.education-services.ru/api';

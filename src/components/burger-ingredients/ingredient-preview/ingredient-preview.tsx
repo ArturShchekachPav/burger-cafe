@@ -1,10 +1,9 @@
-import { setSelectedIngredient } from '@/services/selected-ingredient/slice';
-import { useAppDispatch } from '@/services/store';
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useRef, type JSX } from 'react';
 import { useDrag } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import type { TIngredientPreviewProps } from '@utils/types';
+import type { TIngredientPreviewProps } from '@/types/types';
 
 import styles from './ingredient-preview.module.css';
 
@@ -12,12 +11,13 @@ export const IngredientPreview = ({
   ingredient,
 }: TIngredientPreviewProps): JSX.Element => {
   const { name, price, image, count } = ingredient;
-  const dispatch = useAppDispatch();
   const dragRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleIngredientDetailOpen = useCallback((): void => {
-    dispatch(setSelectedIngredient(ingredient));
-  }, [dispatch, ingredient]);
+    void navigate(`/ingredients/${ingredient._id}`, { state: { background: location } });
+  }, [ingredient]);
 
   const [{ isDrag }, drag] = useDrag({
     type: 'ingredient',

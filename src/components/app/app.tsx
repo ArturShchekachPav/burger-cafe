@@ -1,16 +1,35 @@
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Route, Routes } from 'react-router-dom';
+import { ForgotPassword } from '@/pages/forgot-password/forgot-password';
+import { Home } from '@/pages/home/home';
+import { Ingredient } from '@/pages/ingredient/ingredient';
+import { Login } from '@/pages/login/login';
+import { Profile } from '@/pages/profile/profile';
+import { Register } from '@/pages/register/register';
+import { ResetPassword } from '@/pages/reset-password/reset-password';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  type Location,
+} from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header';
-import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
+
+import { IndredientDetails } from '../burger-ingredients/indredient-details/indredient-details';
+import { Modal } from '../modal/modal';
 
 import type { JSX } from 'react';
 
 import styles from './app.module.css';
 
 export const App = (): JSX.Element => {
+  const location = useLocation() as Location<{ background?: Location }>;
+  const navigate = useNavigate();
+
+  function handleIngredientDetailClose(): void {
+    void navigate(location.state?.background?.pathname ?? '/');
+  }
+
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -18,20 +37,28 @@ export const App = (): JSX.Element => {
         Соберите бургер
       </h1>
       <main className={`${styles.main} pl-5 pr-5`}>
-        <Routes location={}>
-          <Route index element="" />
-          <Route path="/login" element="" />
-          <Route path="/register" element="" />
-          <Route path="/forgot-password" element="" />
-          <Route path="/reset-password" element="" />
-          <Route path="/profile" element="" />
-          <Route path="/ingredients/:id" element="" />
+        <Routes location={location.state?.background ?? location}>
+          <Route index element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/ingredients/:id" element={<Ingredient />} />
         </Routes>
-        <DndProvider backend={HTML5Backend}>
-          <BurgerIngredients />
-          <BurgerConstructor />
-        </DndProvider>
       </main>
+      {location.state?.background && (
+        <Routes>
+          <Route
+            path="/ingredients/:ingredientId"
+            element={
+              <Modal title="Детали ингредиента" onClose={handleIngredientDetailClose}>
+                <IndredientDetails />
+              </Modal>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };

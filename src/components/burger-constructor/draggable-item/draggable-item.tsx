@@ -7,7 +7,7 @@ import {
 import { useCallback, useRef, type JSX } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-import type { TBurgerConstructorIngredient } from '@/utils/types';
+import type { TBurgerConstructorIngredient } from '@/types/types';
 
 import styles from './draggable-item.module.css';
 

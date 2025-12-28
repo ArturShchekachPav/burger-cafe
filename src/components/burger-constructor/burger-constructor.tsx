@@ -12,7 +12,7 @@ import { Total } from '@components/burger-constructor/total/total';
 import { Bun } from './bun/bun';
 import { DraggableItem } from './draggable-item/draggable-item';
 
-import type { TIngredient } from '@/utils/types';
+import type { TIngredient } from '@/types/types';
 
 import styles from './burger-constructor.module.css';
 

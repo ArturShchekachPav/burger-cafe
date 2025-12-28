@@ -1,6 +1,6 @@
 import { IngredientPreview } from '../ingredient-preview/ingredient-preview';
 
-import type { TIngredientTypeSectionProps } from '@utils/types';
+import type { TIngredientTypeSectionProps } from '@/types/types';
 import type { JSX } from 'react';
 
 import styles from './ingredients-type-section.module.css';
