@@ -9,7 +9,18 @@ export const userApi = createApi({
     getUser: builder.query<void, void>({
       query: () => 'user',
     }),
-    login: builder.mutation<void, { email: string; password: string }>({
+    login: builder.mutation<
+      {
+        success: boolean;
+        accessToken: string;
+        refreshToken: string;
+        user: {
+          email: string;
+          name: string;
+        };
+      },
+      { email: string; password: string }
+    >({
       query: (credentials) => ({
         url: 'login',
         method: 'POST',
@@ -22,7 +33,14 @@ export const userApi = createApi({
         method: 'POST',
       }),
     }),
-    refreshToken: builder.mutation<void, { token: string }>({
+    refreshToken: builder.mutation<
+      {
+        success: string;
+        accessToken: string;
+        refreshToken: string;
+      },
+      { token: string }
+    >({
       query: (body) => ({
         url: 'token',
         method: 'POST',
@@ -36,21 +54,44 @@ export const userApi = createApi({
         body: data,
       }),
     }),
-    register: builder.mutation<void, { email: string; password: string; name: string }>({
+    register: builder.mutation<
+      {
+        success: boolean;
+        user: {
+          email: string;
+          name: string;
+        };
+        accessToken: string;
+        refreshToken: string;
+      },
+      { email: string; password: string; name: string }
+    >({
       query: (data) => ({
         url: 'register',
         method: 'POST',
         body: data,
       }),
     }),
-    resetPassword: builder.mutation<void, { email: string }>({
+    resetPassword: builder.mutation<
+      {
+        success: boolean;
+        message: string;
+      },
+      { email: string }
+    >({
       query: (data) => ({
         url: 'password-reset',
         method: 'POST',
         body: data,
       }),
     }),
-    updatePassword: builder.mutation<void, { password: string; token: string }>({
+    updatePassword: builder.mutation<
+      {
+        success: boolean;
+        message: string;
+      },
+      { password: string; token: string }
+    >({
       query: (data) => ({
         url: 'password-reset/reset',
         method: 'POST',
