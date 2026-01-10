@@ -1,0 +1,53 @@
+.container {
+  display: grid;
+  grid-template-columns: 320fr 867fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  overflow: hidden;
+}
+
+.nav {
+  margin-top: 80px;
+}
+
+.navLinks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s linear;
+}
+
+.link:hover {
+  color: var(--text-primary-color);
+}
+
+.linkActive {
+  color: var(--text-primary-color);
+  cursor: default;
+}
+
+.button {
+  padding: 0;
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s linear;
+}
+
+.button:hover {
+  color: var(--text-primary-color);
+}
+
+.description {
+  margin: 80px 0 0;
+}

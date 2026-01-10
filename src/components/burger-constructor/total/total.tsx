@@ -1,4 +1,6 @@
+import { ErrorPage } from '@/components/error-page/error-page';
 import { Modal } from '@/components/modal/modal';
+import { OrderAccepted } from '@/components/orders/order-accepted/order-accepted';
 import {
   getIsAvailableToOrder,
   getSelectedIngredientIds,
@@ -6,18 +8,20 @@ import {
 } from '@/services/constructor/slice';
 import { useCreateOrderMutation } from '@/services/orders/api';
 import { useAppSelector } from '@/services/store';
+import { getIsLoggedIn } from '@/services/user/slice';
+import { routes } from '@/utils/constants';
 import {
   Button,
   CurrencyIcon,
   Preloader,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, type JSX } from 'react';
-
-import { OrderDetails } from '../order-details/order-details';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './total.module.css';
 
 export function Total(): JSX.Element {
+  const isLoggedIn = useAppSelector(getIsLoggedIn);
   const isAvailableToOrder = useAppSelector(getIsAvailableToOrder);
   const totalPrice = useAppSelector(getTotalPrice);
   const selectedIngredients = useAppSelector(getSelectedIngredientIds);
@@ -25,9 +29,15 @@ export function Total(): JSX.Element {
   const [createOrder, { data: order, isLoading, isError, isSuccess, reset }] =
     useCreateOrderMutation();
 
+  const navigate = useNavigate();
+
   const handleCreateOrder = useCallback(() => {
-    void createOrder(selectedIngredients);
-  }, [createOrder, selectedIngredients]);
+    if (isLoggedIn) {
+      void createOrder(selectedIngredients);
+    } else {
+      void navigate(routes.LOGIN);
+    }
+  }, [createOrder, selectedIngredients, isLoggedIn, navigate]);
 
   const handleOrderModalClose = useCallback(() => {
     reset();
@@ -54,11 +64,12 @@ export function Total(): JSX.Element {
           <>
             {isLoading && <Preloader />}
             {isError && (
-              <p className="text text_type_main-default">
-                Ошибка при создании заказа. Пожалуйста, попробуйте позже.
-              </p>
+              <ErrorPage
+                code="500"
+                content="Ошибка при создании заказа. Пожалуйста, попробуйте позже."
+              />
             )}
-            {isSuccess && order && <OrderDetails order={order} />}
+            {isSuccess && order && <OrderAccepted order={order} />}
           </>
         </Modal>
       )}

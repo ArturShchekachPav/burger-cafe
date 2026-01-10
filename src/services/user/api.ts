@@ -1,102 +1,115 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  clearTokens,
+  createBaseQueryWithReauth,
+  setTokens,
+  getRefreshToken,
+} from '@/utils/utils';
+import { createApi } from '@reduxjs/toolkit/query/react';
+
+import type { TAccessTokens, TLoginBody, TUser, TUserWithPassword } from '@/types/types';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://norma.education-services.ru/api/auth/',
-  }),
+  baseQuery: createBaseQueryWithReauth('auth/'),
+  tagTypes: ['User'],
   endpoints: (builder) => ({
-    getUser: builder.query<void, void>({
+    getUser: builder.query<
+      {
+        success: boolean;
+        user: TUser;
+      },
+      void
+    >({
       query: () => 'user',
+      providesTags: ['User'],
     }),
     login: builder.mutation<
       {
         success: boolean;
-        accessToken: string;
-        refreshToken: string;
-        user: {
-          email: string;
-          name: string;
-        };
-      },
-      { email: string; password: string }
+        user: TUser;
+      } & TAccessTokens,
+      TLoginBody
     >({
       query: (credentials) => ({
         url: 'login',
         method: 'POST',
         body: credentials,
       }),
-    }),
-    logout: builder.mutation<void, void>({
-      query: () => ({
-        url: 'logout',
-        method: 'POST',
-      }),
-    }),
-    refreshToken: builder.mutation<
-      {
-        success: string;
-        accessToken: string;
-        refreshToken: string;
+      onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
+        try {
+          const { data } = await queryFulfilled;
+
+          setTokens(data.accessToken, data.refreshToken);
+          dispatch(userApi.util.invalidateTags(['User']));
+        } catch (error) {
+          console.error('Login failed:', error);
+        }
       },
-      { token: string }
-    >({
-      query: (body) => ({
-        url: 'token',
-        method: 'POST',
-        body,
-      }),
     }),
-    updateUser: builder.mutation<void, { email?: string; name?: string }>({
+    logout: builder.mutation<
+      {
+        success: boolean;
+        message: string;
+      },
+      void
+    >({
+      query: () => {
+        const token = getRefreshToken();
+
+        return {
+          url: 'logout',
+          method: 'POST',
+          body: {
+            token,
+          },
+        };
+      },
+      onQueryStarted: async (_, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.error('Logout failed:', error);
+        } finally {
+          clearTokens();
+        }
+      },
+    }),
+    updateUser: builder.mutation<
+      {
+        success: boolean;
+        user: TUser;
+      },
+      TUserWithPassword
+    >({
       query: (data) => ({
         url: 'user',
         method: 'PATCH',
         body: data,
       }),
+      invalidatesTags: ['User'],
     }),
     register: builder.mutation<
       {
         success: boolean;
-        user: {
-          email: string;
-          name: string;
-        };
-        accessToken: string;
-        refreshToken: string;
-      },
-      { email: string; password: string; name: string }
+        user: TUser;
+      } & TAccessTokens,
+      TUserWithPassword
     >({
       query: (data) => ({
         url: 'register',
         method: 'POST',
         body: data,
       }),
-    }),
-    resetPassword: builder.mutation<
-      {
-        success: boolean;
-        message: string;
+      onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
+        try {
+          const { data } = await queryFulfilled;
+
+          setTokens(data.accessToken, data.refreshToken);
+          dispatch(userApi.util.invalidateTags(['User']));
+        } catch (error) {
+          console.error('Registration failed:', error);
+        }
       },
-      { email: string }
-    >({
-      query: (data) => ({
-        url: 'password-reset',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-    updatePassword: builder.mutation<
-      {
-        success: boolean;
-        message: string;
-      },
-      { password: string; token: string }
-    >({
-      query: (data) => ({
-        url: 'password-reset/reset',
-        method: 'POST',
-        body: data,
-      }),
     }),
   }),
 });
@@ -105,9 +118,6 @@ export const {
   useGetUserQuery,
   useLoginMutation,
   useLogoutMutation,
-  useRefreshTokenMutation,
   useUpdateUserMutation,
   useRegisterMutation,
-  useResetPasswordMutation,
-  useUpdatePasswordMutation,
 } = userApi;

@@ -3,9 +3,9 @@ import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
 import type { TCreateOrderData } from '@/types/types';
 import type { JSX } from 'react';
 
-import styles from './order-details.module.css';
+import styles from './order-accepted.module.css';
 
-export function OrderDetails({ order }: { order: TCreateOrderData }): JSX.Element {
+export function OrderAccepted({ order }: { order: TCreateOrderData }): JSX.Element {
   return (
     <main className={styles.order_container}>
       <h2 className={`${styles.order_text} mb-8 text text_type_digits-large`}>

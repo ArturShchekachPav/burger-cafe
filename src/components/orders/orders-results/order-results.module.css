@@ -1,0 +1,30 @@
+.container {
+  display: grid;
+  place-content: baseline;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  gap: 60px 24px;
+}
+
+.shadowResult {
+  text-shadow:
+    0 4px 32px #3333ff80,
+    0 0 8px #3333ff40,
+    0 0 16px #3333ff40;
+}
+
+.inWork {
+  color: #0cc;
+}
+
+.orderNumbers {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.twoColumns {
+  grid-column: span 2;
+}

@@ -4,13 +4,17 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 import { burgerConstructorSlice } from './constructor/slice';
 import { ingredientsApi } from './ingredients/api';
 import { ordersApi } from './orders/api';
+import { passwordApi } from './password/api';
 import { userApi } from './user/api';
+import { userSlice } from './user/slice';
 
 const rootReducer = combineSlices(
   ordersApi,
   burgerConstructorSlice,
   ingredientsApi,
-  userApi
+  userApi,
+  userSlice,
+  passwordApi
 );
 
 export const store = configureStore({
@@ -19,7 +23,8 @@ export const store = configureStore({
     return getDefaultMiddleware().concat(
       ingredientsApi.middleware,
       ordersApi.middleware,
-      userApi.middleware
+      userApi.middleware,
+      passwordApi.middleware
     );
   },
 });

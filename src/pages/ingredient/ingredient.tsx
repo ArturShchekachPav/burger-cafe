@@ -3,9 +3,5 @@ import { IndredientDetails } from '@/components/burger-ingredients/indredient-de
 import type { JSX } from 'react';
 
 export function Ingredient(): JSX.Element {
-  return (
-    <div>
-      <IndredientDetails />
-    </div>
-  );
+  return <IndredientDetails />;
 }

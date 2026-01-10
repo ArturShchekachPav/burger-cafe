@@ -9,11 +9,14 @@ import styles from './home.module.css';
 
 export function Home(): JSX.Element {
   return (
-    <div className={styles.page}>
-      <DndProvider backend={HTML5Backend}>
-        <BurgerIngredients />
-        <BurgerConstructor />
-      </DndProvider>
-    </div>
+    <>
+      <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
+      <div className={styles.page}>
+        <DndProvider backend={HTML5Backend}>
+          <BurgerIngredients />
+          <BurgerConstructor />
+        </DndProvider>
+      </div>
+    </>
   );
 }

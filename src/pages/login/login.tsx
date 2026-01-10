@@ -1,73 +1,99 @@
+import { ErrorText } from '@/components/error-text/error-text';
+import { UnAuthorizedPage } from '@/components/unauthorized-page/unautorized-page';
 import { useLoginMutation } from '@/services/user/api';
-import { Input, Button } from '@krgaa/react-developer-burger-ui-components';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from '@/utils/useForm';
+import {
+  Button,
+  EmailInput,
+  PasswordInput,
+} from '@krgaa/react-developer-burger-ui-components';
+import { useCallback, type ChangeEvent, type JSX } from 'react';
 import { Link } from 'react-router-dom';
 
-import type { JSX } from 'react';
+import type { TApiError, TLoginBody } from '@/types/types';
 
 export function Login(): JSX.Element {
-  const [login, { isLoading, isError }] = useLoginMutation();
+  const [login, { isLoading, isError, error }] = useLoginMutation();
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+  const { fields, setValue, setError, isValid, isAllDirty, handleSubmit } = useForm({
+    email: '',
+    password: '',
   });
 
-  function onSubmit(loginData: { email: string; password: string }): void {
-    void login(loginData);
+  const isFormReady = isValid && isAllDirty && !isLoading;
+
+  function onSubmit(data: TLoginBody): void {
+    void login(data);
   }
 
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+
+      setValue(name as keyof TLoginBody, value);
+    },
+    [setValue]
+  );
+
   return (
-    <div>
-      <h2>Вход</h2>
-      <form onSubmit={void handleSubmit(onSubmit)}>
-        <Controller
-          control={control}
-          name="email"
-          rules={{
-            required: 'Введите email',
-          }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              error={Boolean(errors.email)}
-              errorText={errors.email?.message}
-            />
+    <UnAuthorizedPage
+      title="Вход"
+      form={
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <EmailInput
+            name="email"
+            value={fields.email.value}
+            onChange={handleInputChange}
+            checkValid={(isValid: boolean) =>
+              setError('email', isValid ? undefined : 'Некорректный email')
+            }
+            errorText={fields.email.error}
+            required
+            extraClass="mb-6"
+          />
+          <PasswordInput
+            name="password"
+            value={fields.password.value}
+            onChange={handleInputChange}
+            checkValid={(isValid: boolean) =>
+              setError('password', isValid ? undefined : 'Некорректный пароль')
+            }
+            errorText={fields.password.error}
+            required
+            extraClass="mb-6"
+          />
+          <Button
+            extraClass="form-button"
+            type="primary"
+            size="medium"
+            disabled={!isFormReady}
+            htmlType="submit"
+          >
+            Войти
+          </Button>
+          {isError && (
+            <ErrorText extraClass="form-error mt-3">
+              {(error as TApiError).data.message === 'email or password are incorrect'
+                ? 'Неверный email или пароль.'
+                : 'Ошибка при входе. Проверьте данные и попробуйте снова.'}
+            </ErrorText>
           )}
-        />
-        <Controller
-          control={control}
-          name="password"
-          rules={{
-            required: 'Введите пароль',
-          }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              error={Boolean(errors.password)}
-              errorText={errors.password?.message}
-            />
-          )}
-        />
-        <Button type="primary" size="medium" disabled={isLoading} htmlType="submit">
-          Войти
-        </Button>
-        {isError && <div>Ошибка при входе. Проверьте данные и попробуйте снова.</div>}
-      </form>
-      <div>
-        <p>
-          Вы новый пользователь? <Link to="/register">Зарегистрироваться</Link>
-        </p>
-        <p>
-          Забыли пароль? <Link to="/reset-password">Восстановить пароль</Link>
-        </p>
-      </div>
-    </div>
+        </form>
+      }
+      links={[
+        <>
+          Вы новый пользователь?{' '}
+          <Link className="link" to="/register">
+            Зарегистрироваться
+          </Link>
+        </>,
+        <>
+          Забыли пароль?{' '}
+          <Link className="link" to="/forgot-password">
+            Восстановить пароль
+          </Link>
+        </>,
+      ]}
+    />
   );
 }

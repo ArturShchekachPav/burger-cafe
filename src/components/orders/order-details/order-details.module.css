@@ -1,0 +1,62 @@
+.container {
+  width: 100%;
+  max-width: 640px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.status {
+  color: #0cc;
+}
+
+.number {
+  text-align: center;
+}
+
+.ingredients {
+  display: grid;
+  gap: 16px;
+  max-height: 310px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.cost {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.ingredientPreviewWrapper {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+  border-radius: 50%;
+}
+
+.ingredientPreview {
+  width: 60px;
+  height: 60px;
+  background-color: #131316;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}

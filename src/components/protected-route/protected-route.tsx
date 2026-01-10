@@ -1,34 +1,39 @@
-// import { useSelector } from 'react-redux';
-// import { Navigate, useLocation, type Location } from 'react-router-dom';
+import { useGetUserQuery } from '@/services/user/api';
+import { getIsAuthChecked, getIsLoggedIn } from '@/services/user/slice';
+import { routes } from '@/utils/constants';
+import { Preloader } from '@krgaa/react-developer-burger-ui-components';
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
 
-// import { selectIsAuthChecked, selectUser } from '../services/user';
+import type { TLocation } from '@/types/types';
+import type { JSX } from 'react';
 
-// import type { JSX } from 'react';
+export const ProtectedRoute = ({
+  onlyUnAuth = false,
+  component,
+}: {
+  onlyUnAuth?: boolean;
+  component: JSX.Element;
+}): JSX.Element => {
+  useGetUserQuery();
 
-// export const Protected = ({
-//   onlyUnAuth = false,
-//   component,
-// }: {
-//   onlyUnAuth?: boolean;
-//   component: JSX.Element;
-// }): JSX.Element => {
-//   const user = useSelector(selectUser);
-//   const isAuthChecked = useSelector(selectIsAuthChecked);
-//   const location = useLocation() as Location<{ from?: Location['pathname'] }>;
+  const isAuthChecked = useSelector(getIsAuthChecked);
+  const isLoggedIn = useSelector(getIsLoggedIn);
+  const location = useLocation() as TLocation;
 
-//   if (!isAuthChecked) {
-//     return <div>Loading...</div>;
-//   }
+  if (!isAuthChecked) {
+    return <Preloader />;
+  }
 
-//   if (!onlyUnAuth && !user) {
-//     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-//   }
+  if (!onlyUnAuth && !isLoggedIn) {
+    return <Navigate to={routes.LOGIN} state={{ from: location.pathname }} replace />;
+  }
 
-//   if (onlyUnAuth && user) {
-//     const from = location?.state?.from ?? '/';
+  if (onlyUnAuth && isLoggedIn) {
+    const from = location?.state?.from ?? routes.HOME;
 
-//     return <Navigate to={from} replace />;
-//   }
+    return <Navigate to={from} replace />;
+  }
 
-//   return component;
-// };
+  return component;
+};
