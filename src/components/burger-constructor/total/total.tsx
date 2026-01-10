@@ -35,7 +35,7 @@ export function Total(): JSX.Element {
     if (isLoggedIn) {
       void createOrder(selectedIngredients);
     } else {
-      void navigate(routes.LOGIN);
+      void navigate(routes.LOGIN, { state: { from: routes.HOME } });
     }
   }, [createOrder, selectedIngredients, isLoggedIn, navigate]);
 
