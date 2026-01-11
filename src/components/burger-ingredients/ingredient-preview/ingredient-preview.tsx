@@ -49,9 +49,7 @@ export const IngredientPreview = ({
         {price} <CurrencyIcon type="primary" />
       </p>
       <h3 className={`${styles.name} text text_type_main-default`}>{name}</h3>
-      {Boolean(count) && count !== undefined && count > 0 && (
-        <Counter count={count} size="default" extraClass={styles.counter} />
-      )}
+      {count > 0 && <Counter count={count} size="default" extraClass={styles.counter} />}
     </div>
   );
 };
