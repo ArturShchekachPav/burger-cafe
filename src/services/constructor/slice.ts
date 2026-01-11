@@ -119,3 +119,20 @@ export const getSelectedIngredientIds = createSelector(
     return ids;
   }
 );
+
+export const getIngredientsCount = createSelector(
+  [getBurgerConstructor],
+  ({ bun, ingredients }) => {
+    const counts: Record<TIngredient['_id'], number> = {};
+
+    if (bun) {
+      counts[bun._id] = 2;
+    }
+
+    ingredients.forEach((ingredient) => {
+      counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
+    });
+
+    return counts;
+  }
+);

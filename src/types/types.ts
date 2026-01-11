@@ -54,10 +54,8 @@ export type TCreateOrderData = {
 
 export type TBurgerConstructorIngredient = TIngredient & { uuid: string };
 
-export type TIngredientWithCount = TIngredient & { count?: number };
-
 export type TIngredientPreviewProps = {
-  ingredient: TIngredientWithCount;
+  ingredient: TIngredient;
 };
 
 export type TApiError = {

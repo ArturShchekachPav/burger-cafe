@@ -1,8 +1,8 @@
+import { useAppSelector } from '@/services/store';
 import { useGetUserQuery } from '@/services/user/api';
 import { getIsAuthChecked, getIsLoggedIn } from '@/services/user/slice';
 import { routes } from '@/utils/constants';
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import type { TLocation } from '@/types/types';
@@ -17,8 +17,8 @@ export const ProtectedRoute = ({
 }): JSX.Element => {
   useGetUserQuery();
 
-  const isAuthChecked = useSelector(getIsAuthChecked);
-  const isLoggedIn = useSelector(getIsLoggedIn);
+  const isAuthChecked = useAppSelector(getIsAuthChecked);
+  const isLoggedIn = useAppSelector(getIsLoggedIn);
   const location = useLocation() as TLocation;
 
   if (!isAuthChecked) {

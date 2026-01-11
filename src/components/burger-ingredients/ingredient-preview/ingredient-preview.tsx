@@ -3,6 +3,8 @@ import { useCallback, useRef, type JSX } from 'react';
 import { useDrag } from 'react-dnd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useIngredientCount } from './useIngredientCount';
+
 import type { TIngredientPreviewProps } from '@/types/types';
 
 import styles from './ingredient-preview.module.css';
@@ -10,10 +12,12 @@ import styles from './ingredient-preview.module.css';
 export const IngredientPreview = ({
   ingredient,
 }: TIngredientPreviewProps): JSX.Element => {
-  const { name, price, image, count } = ingredient;
+  const { name, price, image, _id } = ingredient;
   const dragRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const count = useIngredientCount(_id);
 
   const handleIngredientDetailOpen = useCallback((): void => {
     void navigate(`/ingredients/${ingredient._id}`, { state: { background: location } });
