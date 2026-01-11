@@ -1,23 +1,27 @@
-import { setSelectedIngredient } from '@/services/selected-ingredient/slice';
-import { useAppDispatch } from '@/services/store';
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useRef, type JSX } from 'react';
 import { useDrag } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import type { TIngredientPreviewProps } from '@utils/types';
+import { useIngredientCount } from './useIngredientCount';
+
+import type { TIngredientPreviewProps } from '@/types/types';
 
 import styles from './ingredient-preview.module.css';
 
 export const IngredientPreview = ({
   ingredient,
 }: TIngredientPreviewProps): JSX.Element => {
-  const { name, price, image, count } = ingredient;
-  const dispatch = useAppDispatch();
+  const { name, price, image, _id } = ingredient;
   const dragRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const count = useIngredientCount(_id);
 
   const handleIngredientDetailOpen = useCallback((): void => {
-    dispatch(setSelectedIngredient(ingredient));
-  }, [dispatch, ingredient]);
+    void navigate(`/ingredients/${ingredient._id}`, { state: { background: location } });
+  }, [ingredient]);
 
   const [{ isDrag }, drag] = useDrag({
     type: 'ingredient',
@@ -45,9 +49,7 @@ export const IngredientPreview = ({
         {price} <CurrencyIcon type="primary" />
       </p>
       <h3 className={`${styles.name} text text_type_main-default`}>{name}</h3>
-      {Boolean(count) && count !== undefined && count > 0 && (
-        <Counter count={count} size="default" extraClass={styles.counter} />
-      )}
+      {count > 0 && <Counter count={count} size="default" extraClass={styles.counter} />}
     </div>
   );
 };

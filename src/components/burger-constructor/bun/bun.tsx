@@ -1,6 +1,6 @@
 import { ConstructorElement } from '@krgaa/react-developer-burger-ui-components';
 
-import type { TIngredient } from '@/utils/types';
+import type { TIngredient } from '@/types/types';
 import type { JSX } from 'react';
 
 import styles from './bun.module.css';

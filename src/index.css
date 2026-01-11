@@ -2,6 +2,28 @@ body {
   margin: 0;
 }
 
+.link {
+  color: #4c4cff;
+  text-decoration: none;
+  transition: color 0.3s ease-in;
+}
+
+.link:hover {
+  color: #fff;
+  opacity: 0.9;
+}
+
+.form-error {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.form-button {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 /* Fix for scrollbar */
 
 @supports (scrollbar-color: auto) {

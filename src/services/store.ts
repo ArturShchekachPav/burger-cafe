@@ -2,19 +2,31 @@ import { combineSlices, configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { burgerConstructorSlice } from './constructor/slice';
-import { ingredientsSlice } from './ingredients/slice';
-import { orderSlice } from './order/slice';
-import { selectedIngredientSlice } from './selected-ingredient/slice';
+import { ingredientsApi } from './ingredients/api';
+import { ordersApi } from './orders/api';
+import { passwordApi } from './password/api';
+import { userApi } from './user/api';
+import { userSlice } from './user/slice';
 
 const rootReducer = combineSlices(
-  orderSlice,
-  selectedIngredientSlice,
-  ingredientsSlice,
-  burgerConstructorSlice
+  ordersApi,
+  burgerConstructorSlice,
+  ingredientsApi,
+  userApi,
+  userSlice,
+  passwordApi
 );
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware(getDefaultMiddleware) {
+    return getDefaultMiddleware().concat(
+      ingredientsApi.middleware,
+      ordersApi.middleware,
+      userApi.middleware,
+      passwordApi.middleware
+    );
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

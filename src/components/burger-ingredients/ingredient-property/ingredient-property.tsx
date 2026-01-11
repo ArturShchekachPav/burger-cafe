@@ -1,6 +1,6 @@
 import { memo, type JSX } from 'react';
 
-import type { TIngredientPropertyProps } from '@/utils/types';
+import type { TIngredientPropertyProps } from '@/types/types';
 
 import styles from './ingredient-property.module.css';
 

@@ -1,0 +1,15 @@
+.container {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  max-width: 640px;
+  margin: auto;
+}
+
+.title {
+  text-align: center;
+}
+
+.content {
+  text-align: center;
+}

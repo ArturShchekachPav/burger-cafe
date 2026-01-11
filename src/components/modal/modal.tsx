@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 
 import { ModalOverlay } from './modal-overlay/modal-overlay';
 
-import type { TModalProps } from '@/utils/types';
+import type { TModalProps } from '@/types/types';
 import type { ReactPortal } from 'react';
 
 import styles from './modal.module.css';

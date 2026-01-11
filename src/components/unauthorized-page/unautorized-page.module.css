@@ -1,0 +1,21 @@
+.page {
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+}
+
+.title {
+  text-align: center;
+}
+
+.links {
+  display: grid;
+  gap: 24px;
+  margin: 80px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  text-align: center;
+}

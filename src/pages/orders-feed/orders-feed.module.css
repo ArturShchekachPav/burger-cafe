@@ -1,0 +1,8 @@
+.page {
+  display: grid;
+  grid-template-columns: 608fr 584fr;
+  flex: 1;
+  gap: 56px;
+  padding-bottom: 40px;
+  overflow: hidden;
+}

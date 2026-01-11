@@ -1,26 +1,19 @@
 .app {
   display: flex;
   flex-direction: column;
+  gap: 40px;
   height: 100vh;
   color: var(--text-primary-color);
   background-color: var(--background-alt);
 }
 
-.title {
-  width: 100%;
-  max-width: 1260px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
 .main {
   display: flex;
-  justify-content: space-between;
-  gap: 40px;
+  flex: 1;
+  flex-direction: column;
   box-sizing: border-box;
   width: 100%;
   max-width: 1240px;
-  height: 100%;
   margin: 0 auto;
   overflow: hidden;
 }

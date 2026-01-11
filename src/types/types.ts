@@ -1,5 +1,6 @@
 import type { INGREDIENTS_TYPES } from '@utils/constants';
 import type { JSX } from 'react';
+import type { Location } from 'react-router-dom';
 
 export type TIngredient = {
   _id: string;
@@ -53,8 +54,40 @@ export type TCreateOrderData = {
 
 export type TBurgerConstructorIngredient = TIngredient & { uuid: string };
 
-export type TIngredientWithCount = TIngredient & { count?: number };
-
 export type TIngredientPreviewProps = {
-  ingredient: TIngredientWithCount;
+  ingredient: TIngredient;
 };
+
+export type TApiError = {
+  data: {
+    success: boolean;
+    message: string;
+  };
+  status: number;
+};
+
+export type TLocation = Location<{
+  background?: Location;
+  from?: Location['pathname'];
+}>;
+
+export type TForgotPasswordBody = { email: string };
+
+export type TUpdatePasswordBody = {
+  password: string;
+  token: string;
+};
+
+export type TUser = {
+  email: string;
+  name: string;
+};
+
+export type TUserWithPassword = TUser & { password: string };
+
+export type TAccessTokens = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type TLoginBody = Pick<TUserWithPassword, 'password' | 'email'>;

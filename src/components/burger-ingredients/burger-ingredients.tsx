@@ -1,37 +1,25 @@
-import { loadIngredientsThunk } from '@/services/ingredients/actions';
-import { getIngredientsState } from '@/services/ingredients/slice';
-import {
-  getSelectedIngredient,
-  resetSelectedIngredient,
-} from '@/services/selected-ingredient/slice';
-import { useAppDispatch, useAppSelector } from '@/services/store';
+import { useGetIngredientsQuery } from '@/services/ingredients/api';
 import { Preloader, Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useEffect, type JSX } from 'react';
 
 import { INGREDIENTS_TYPES } from '@utils/constants';
 
-import { Modal } from '../modal/modal';
-import { IndredientDetails } from './indredient-details/indredient-details';
 import { IngredientsTypeSection } from './ingredients-type-section/ingredients-type-section';
 import { useSectionsScroll } from './use-sections-scroll';
+
+import type { JSX } from 'react';
 
 import styles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = (): JSX.Element => {
-  const { ingredients, isError, isLoading } = useAppSelector(getIngredientsState);
-  const selectedIngredient = useAppSelector(getSelectedIngredient);
-  const dispatch = useAppDispatch();
+  const {
+    data: ingredientsData,
+    isError,
+    isLoading,
+    isSuccess,
+  } = useGetIngredientsQuery();
 
   const { activeTab, containerRef, setSectionRef, scrollToSection } =
     useSectionsScroll();
-
-  useEffect(() => {
-    void dispatch(loadIngredientsThunk());
-  }, []);
-
-  const handleIngredientDetailClose = useCallback((): void => {
-    dispatch(resetSelectedIngredient());
-  }, [dispatch]);
 
   return (
     <section className={styles.burger_ingredients}>
@@ -57,23 +45,18 @@ export const BurgerIngredients = (): JSX.Element => {
           Ошибка при загрузке ингредиентов. Пожалуйста, попробуйте позже.
         </p>
       )}
-      {!isLoading && !isError && (
+      {isSuccess && ingredientsData && (
         <ul ref={containerRef} className={`${styles.types_list} custom-scroll`}>
           {INGREDIENTS_TYPES.map(({ name, code }) => (
             <li key={code} ref={setSectionRef(code)}>
               <IngredientsTypeSection
                 name={name}
                 code={code}
-                ingredients={ingredients}
+                ingredients={ingredientsData.data}
               />
             </li>
           ))}
         </ul>
-      )}
-      {selectedIngredient && (
-        <Modal title="Детали ингредиента" onClose={handleIngredientDetailClose}>
-          <IndredientDetails ingredient={selectedIngredient} />
-        </Modal>
       )}
     </section>
   );
