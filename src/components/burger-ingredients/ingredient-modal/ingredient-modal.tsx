@@ -16,7 +16,10 @@ export const IngredientModal = (): JSX.Element => {
   }
 
   return (
-    <Modal title="Детали ингредиента" onClose={handleClose}>
+    <Modal
+      title={<h2 className="text text_type_main-large">Детали ингредиента</h2>}
+      onClose={handleClose}
+    >
       <IndredientDetails modal />
     </Modal>
   );

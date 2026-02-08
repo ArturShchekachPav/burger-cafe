@@ -52,7 +52,7 @@ export const BurgerIngredients = (): JSX.Element => {
               <IngredientsTypeSection
                 name={name}
                 code={code}
-                ingredients={ingredientsData.data}
+                ingredients={ingredientsData.arr}
               />
             </li>
           ))}

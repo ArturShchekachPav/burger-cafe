@@ -17,7 +17,12 @@ export type TIngredient = {
   __v: number;
 };
 
-export type TGetIngredientData = { success: boolean; data: TIngredient[] };
+export type TGetIngredientsData = { success: boolean; data: TIngredient[] };
+
+export type TGetIngredientsTranformData = {
+  arr: TIngredient[];
+  obj: Record<TIngredient['_id'], TIngredient>;
+};
 
 export type TBurgerConstructorProps = {
   ingredients: TIngredient[];
@@ -41,7 +46,7 @@ export type TIngredientTypeSectionProps = {
 export type TModalProps = {
   onClose: () => void;
   children: JSX.Element;
-  title?: string;
+  title?: JSX.Element;
 };
 
 export type TCreateOrderData = {
@@ -91,3 +96,29 @@ export type TAccessTokens = {
 };
 
 export type TLoginBody = Pick<TUserWithPassword, 'password' | 'email'>;
+
+export type TOrder = {
+  ingredients: TIngredient['_id'][];
+  _id: string;
+  status: 'done' | 'created' | 'pending';
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+};
+
+export type TOrdersData = {
+  success: boolean;
+  orders: TOrder[];
+};
+
+export type TOrdersDataWithCounts = TOrdersData & {
+  total: number;
+  totalToday: number;
+};
+
+export type TSocketState<Data> = {
+  data: Data;
+  status: 'offline' | 'online' | 'connecting' | 'initializing';
+  error: null | string;
+};

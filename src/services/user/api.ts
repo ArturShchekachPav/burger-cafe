@@ -6,6 +6,8 @@ import {
 } from '@/utils/utils';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
+import { ordersApi } from '../orders/api';
+
 import type { TAccessTokens, TLoginBody, TUser, TUserWithPassword } from '@/types/types';
 
 export const userApi = createApi({
@@ -64,13 +66,15 @@ export const userApi = createApi({
           },
         };
       },
-      onQueryStarted: async (_, { queryFulfilled }) => {
+      onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
         try {
           await queryFulfilled;
         } catch (error) {
           console.error('Logout failed:', error);
         } finally {
           clearTokens();
+
+          dispatch(ordersApi.util.invalidateTags(['UserOrders']));
         }
       },
     }),
