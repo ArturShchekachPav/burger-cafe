@@ -11,19 +11,12 @@ import type { JSX } from 'react';
 import styles from './indredient-details.module.css';
 
 export function IndredientDetails({ modal }: { modal?: boolean }): JSX.Element {
-  const {
-    data: ingredientsData,
-    isError,
-    isLoading,
-    isSuccess,
-  } = useGetIngredientsQuery();
+  const { data: ingredientsData, isError, isLoading } = useGetIngredientsQuery();
 
   const ingredientId = useParams<{ ingredientId: string }>().ingredientId;
 
   const ingredient =
-    isSuccess && ingredientsData
-      ? ingredientsData.data.find((item) => item._id === ingredientId)
-      : null;
+    ingredientId && ingredientsData ? ingredientsData.obj[ingredientId] : undefined;
 
   if (isLoading) {
     return (

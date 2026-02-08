@@ -61,6 +61,7 @@ export const App = (): JSX.Element => {
             path={routes.USER_ORDER}
             element={<ProtectedRoute component={<Order />} />}
           />
+          <Route path={routes.ORDER} element={<Order />} />
           <Route path={routes.INGREDIENT} element={<Ingredient />} />
           <Route path={routes.NOT_FOUND} element={<NotFound />} />
         </Routes>
@@ -72,6 +73,7 @@ export const App = (): JSX.Element => {
             path={routes.USER_ORDER}
             element={<ProtectedRoute component={<OrderModal />} />}
           />
+          <Route path={routes.ORDER} element={<OrderModal />} />
         </Routes>
       )}
     </div>

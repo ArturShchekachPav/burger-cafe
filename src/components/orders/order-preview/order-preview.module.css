@@ -1,5 +1,6 @@
 .containter {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
   padding: 24px;
   background-color: #1c1c21;
@@ -21,6 +22,14 @@
   padding: 2px;
   background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
   border-radius: 50%;
+}
+
+.ingredientPreviewWrapperMore {
+  position: relative;
+  z-index: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
 }
 
 .ingredientPreviewWrapper:first-of-type {
@@ -52,4 +61,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.moreCount {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: #fff;
 }

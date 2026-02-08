@@ -1,35 +1,91 @@
+import type { TOrder } from '@/types/types';
 import type { JSX } from 'react';
 
 import styles from './order-results.module.css';
 
-export const OrdersResults = (): JSX.Element => {
+export const OrdersResults = ({
+  todayCount,
+  totalCount,
+  doneOrders,
+  inWorkOrders,
+}: {
+  todayCount: number;
+  totalCount: number;
+  doneOrders: TOrder['number'][];
+  inWorkOrders: TOrder['number'][];
+}): JSX.Element => {
   return (
     <section className={`${styles.container}`}>
       <div>
         <h5 className="text text_type_main-medium mb-6">Готовы:</h5>
-        <ul className={`${styles.orderNumbers}`}>
-          <li className={`text text_type_digits-default ${styles.inWork}`}>034533</li>
-          <li className={`text text_type_digits-default ${styles.inWork}`}>034532</li>
-          <li className={`text text_type_digits-default ${styles.inWork}`}>034530</li>
-          <li className={`text text_type_digits-default ${styles.inWork}`}>034527</li>
-          <li className={`text text_type_digits-default ${styles.inWork}`}>034525</li>
+        <ul className={`${styles.ordersGroups}`}>
+          {doneOrders
+            .reduce((acc: TOrder['number'][][], orderNumber, index) => {
+              const groupIndex = Math.floor(index / 10);
+
+              if (!acc[groupIndex]) {
+                acc[groupIndex] = [];
+              }
+
+              acc[groupIndex].push(orderNumber);
+
+              return acc;
+            }, [])
+            .map((group, index) => (
+              <li key={index}>
+                <ul className={`${styles.orderNumbers}`}>
+                  {group.map((orderNumber) => (
+                    <li
+                      key={orderNumber}
+                      className={`text text_type_digits-default ${styles.done}`}
+                    >
+                      {orderNumber}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
         </ul>
       </div>
       <div>
         <h5 className="text text_type_main-medium  mb-6">В работе:</h5>
-        <ul className={`${styles.orderNumbers}`}>
-          <li className="text text_type_digits-default">034538</li>
-          <li className="text text_type_digits-default">034541</li>
-          <li className="text text_type_digits-default">034542</li>
+        <ul className={`${styles.ordersGroups}`}>
+          {inWorkOrders
+            .reduce((acc: TOrder['number'][][], orderNumber, index) => {
+              const groupIndex = Math.floor(index / 10);
+
+              if (!acc[groupIndex]) {
+                acc[groupIndex] = [];
+              }
+
+              acc[groupIndex].push(orderNumber);
+
+              return acc;
+            }, [])
+            .map((group, index) => (
+              <li key={index}>
+                <ul className={`${styles.orderNumbers}`}>
+                  {group.map((orderNumber) => (
+                    <li key={orderNumber} className={`text text_type_digits-default`}>
+                      {orderNumber}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
         </ul>
       </div>
       <div className={`${styles.twoColumns}`}>
         <h5 className="text text_type_main-medium">Выполнено за все время:</h5>
-        <p className={`text text_type_digits-large ${styles.shadowResult}`}>28 752</p>
+        <p className={`text text_type_digits-large ${styles.shadowResult}`}>
+          {totalCount}
+        </p>
       </div>
       <div className={`${styles.twoColumns}`}>
         <h5 className="text text_type_main-medium">Выполнено за сегодня:</h5>
-        <p className={`text text_type_digits-large ${styles.shadowResult}`}>138</p>
+        <p className={`text text_type_digits-large ${styles.shadowResult}`}>
+          {todayCount}
+        </p>
       </div>
     </section>
   );

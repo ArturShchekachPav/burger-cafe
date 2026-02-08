@@ -3,13 +3,14 @@ export const BASE_URL = 'https://norma.education-services.ru/api/';
 export const routes = {
   HOME: '/',
   ORDERS_FEED: '/feed',
+  ORDER: '/feed/:orderNumber',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   PROFILE: '/profile',
   USER_ORDERS: '/profile/orders/',
-  USER_ORDER: '/profile/orders/:orderId',
+  USER_ORDER: '/profile/orders/:orderNumber',
   INGREDIENT: '/ingredients/:ingredientId',
   NOT_FOUND: '*',
 };
