@@ -140,172 +140,155 @@ export const getOrderDetails = (
   );
 };
 
-export function socketObject<T>(
+export function socket<T>(
   withTokenRefresh: boolean,
   url: string
-): {
-  queryFn: () => {
-    data: TSocketState<T>;
-  };
-  onCacheEntryAdded(
+): (
+  _: void,
+  api: {
+    updateCachedData: (updater: (draft: TSocketState<T>) => void) => void;
+    cacheDataLoaded: Promise<{ data: TSocketState<T>; meta?: unknown }>;
+    cacheEntryRemoved: Promise<void>;
+  }
+) => Promise<void> {
+  return async function (
     _: void,
     api: {
       updateCachedData: (updater: (draft: TSocketState<T>) => void) => void;
       cacheDataLoaded: Promise<{ data: TSocketState<T>; meta?: unknown }>;
       cacheEntryRemoved: Promise<void>;
     }
-  ): Promise<void>;
-} {
-  return {
-    queryFn: (): { data: TSocketState<T> } => ({
-      data: {
-        data: null,
-        status: 'initializing',
-        error: null,
-      },
-    }),
-    async onCacheEntryAdded(
-      _: void,
-      api: {
-        updateCachedData: (updater: (draft: TSocketState<T>) => void) => void;
-        cacheDataLoaded: Promise<{ data: TSocketState<T>; meta?: unknown }>;
-        cacheEntryRemoved: Promise<void>;
+  ): Promise<void> {
+    let ws: WebSocket | null = null;
+    let reconnectTimer: NodeJS.Timeout | null = null;
+    const RECONNECT_DELAY = 3000;
+
+    function onError(): void {
+      api.updateCachedData((draft) => ({ ...draft, error: 'error' }));
+    }
+
+    function onOpen(): void {
+      api.updateCachedData((draft) => ({ ...draft, error: null, status: 'online' }));
+
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
       }
-    ): Promise<void> {
-      let ws: WebSocket | null = null;
-      let reconnectTimer: NodeJS.Timeout | null = null;
-      const RECONNECT_DELAY = 3000;
+    }
 
-      function onError(): void {
-        api.updateCachedData((draft) => ({ ...draft, error: 'error' }));
+    function onClose(event: CloseEvent): void {
+      api.updateCachedData((draft) => ({ ...draft, status: 'offline' }));
+
+      if (event.code !== 1000) {
+        reconnectTimer = setTimeout(() => {
+          connect();
+        }, RECONNECT_DELAY);
       }
+    }
 
-      function onOpen(): void {
-        api.updateCachedData((draft) => ({ ...draft, error: null, status: 'online' }));
-
-        if (reconnectTimer) {
-          clearTimeout(reconnectTimer);
-          reconnectTimer = null;
-        }
-      }
-
-      function onClose(event: CloseEvent): void {
-        api.updateCachedData((draft) => ({ ...draft, status: 'offline' }));
-
-        if (event.code !== 1000) {
-          reconnectTimer = setTimeout(() => {
-            connect();
-          }, RECONNECT_DELAY);
-        }
-      }
-
-      function onMessage(event: MessageEvent<string>): void {
-        const data = event.data;
-
-        try {
-          const parsedData = JSON.parse(data) as T & { message?: string };
-
-          if (withTokenRefresh && parsedData.message === 'Invalid or missing token') {
-            refresh()
-              .then(() => {
-                const accessToken = getAccessToken();
-
-                if (!accessToken) {
-                  api.updateCachedData((draft) => ({
-                    ...draft,
-                    error: 'No access token',
-                  }));
-                  return;
-                }
-
-                ws = new WebSocket(`${url}?token=${accessToken}`);
-              })
-              .catch((error) => {
-                api.updateCachedData((draft) => ({
-                  ...draft,
-                  error: (error as Error).message,
-                }));
-              });
-
-            disconnect();
-
-            return;
-          }
-
-          api.updateCachedData((draft) => ({ ...draft, orderData: parsedData }));
-        } catch (error) {
-          api.updateCachedData((draft) => ({
-            ...draft,
-            error: (error as Error).message,
-          }));
-        }
-      }
-
-      function disconnect(): void {
-        if (ws) {
-          ws.removeEventListener('message', onMessage);
-          ws.removeEventListener('open', onOpen);
-          ws.removeEventListener('close', onClose);
-          ws.removeEventListener('error', onError);
-
-          if (
-            ws.readyState === WebSocket.OPEN ||
-            ws.readyState === WebSocket.CONNECTING
-          ) {
-            ws.close(1000, 'Disconnecting');
-          }
-
-          ws = null;
-        }
-      }
-
-      function connect(): void {
-        disconnect();
-
-        if (withTokenRefresh) {
-          const accessToken = getAccessToken();
-
-          if (!accessToken) {
-            api.updateCachedData((draft) => ({
-              ...draft,
-              error: 'No access token',
-            }));
-            return;
-          }
-
-          ws = new WebSocket(`${url}?token=${accessToken}`);
-        } else {
-          ws = new WebSocket(url);
-        }
-
-        api.updateCachedData((draft) => ({ ...draft, status: 'connecting' }));
-
-        ws.addEventListener('message', onMessage);
-        ws.addEventListener('open', onOpen);
-        ws.addEventListener('close', onClose);
-        ws.addEventListener('error', onError);
-      }
-
-      function cleanup(): void {
-        if (reconnectTimer) {
-          clearTimeout(reconnectTimer);
-        }
-
-        disconnect();
-      }
+    function onMessage(event: MessageEvent<string>): void {
+      const data = event.data;
 
       try {
-        await api.cacheDataLoaded;
-        connect();
-        await api.cacheEntryRemoved;
+        const parsedData = JSON.parse(data) as T & { message?: string };
+
+        if (withTokenRefresh && parsedData.message === 'Invalid or missing token') {
+          refresh()
+            .then(() => {
+              const accessToken = getAccessToken();
+
+              if (!accessToken) {
+                api.updateCachedData((draft) => ({
+                  ...draft,
+                  error: 'No access token',
+                }));
+                return;
+              }
+
+              ws = new WebSocket(`${url}?token=${accessToken.split(' ')[1]}`);
+            })
+            .catch((error) => {
+              api.updateCachedData((draft) => ({
+                ...draft,
+                error: (error as Error).message,
+              }));
+            });
+
+          disconnect();
+
+          return;
+        }
+
+        api.updateCachedData((draft) => ({ ...draft, data: parsedData }));
       } catch (error) {
         api.updateCachedData((draft) => ({
           ...draft,
           error: (error as Error).message,
         }));
-      } finally {
-        cleanup();
       }
-    },
+    }
+
+    function disconnect(): void {
+      if (ws) {
+        ws.removeEventListener('message', onMessage);
+        ws.removeEventListener('open', onOpen);
+        ws.removeEventListener('close', onClose);
+        ws.removeEventListener('error', onError);
+
+        if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+          ws.close(1000, 'Disconnecting');
+        }
+
+        ws = null;
+      }
+    }
+
+    function connect(): void {
+      disconnect();
+
+      if (withTokenRefresh) {
+        const accessToken = getAccessToken();
+
+        if (!accessToken) {
+          api.updateCachedData((draft) => ({
+            ...draft,
+            error: 'No access token',
+          }));
+          return;
+        }
+
+        ws = new WebSocket(`${url}?token=${accessToken.split(' ')[1]}`);
+      } else {
+        ws = new WebSocket(url);
+      }
+
+      api.updateCachedData((draft) => ({ ...draft, status: 'connecting' }));
+
+      ws.addEventListener('message', onMessage);
+      ws.addEventListener('open', onOpen);
+      ws.addEventListener('close', onClose);
+      ws.addEventListener('error', onError);
+    }
+
+    function cleanup(): void {
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+      }
+
+      disconnect();
+    }
+
+    try {
+      await api.cacheDataLoaded;
+      connect();
+      await api.cacheEntryRemoved;
+    } catch (error) {
+      api.updateCachedData((draft) => ({
+        ...draft,
+        error: (error as Error).message,
+      }));
+    } finally {
+      cleanup();
+    }
   };
 }

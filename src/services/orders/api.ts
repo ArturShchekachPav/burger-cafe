@@ -1,4 +1,4 @@
-import { createBaseQueryWithReauth, socketObject } from '@/utils/utils';
+import { createBaseQueryWithReauth, socket } from '@/utils/utils';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import type {
@@ -26,14 +26,26 @@ export const ordersApi = createApi({
         url: ingredientId,
       }),
     }),
-    getFeedOrders: builder.query<TSocketState<TOrdersDataWithCounts>, void>(
-      socketObject<TOrdersDataWithCounts>(
+    getFeedOrders: builder.query<TSocketState<TOrdersDataWithCounts>, void>({
+      query: () => 'all',
+      transformResponse: (response: TOrdersDataWithCounts) => ({
+        data: response,
+        status: 'initializing',
+        error: null,
+      }),
+      onCacheEntryAdded: socket<TOrdersDataWithCounts>(
         false,
-        'wss://norma.nomoreparties.space/orders/all'
-      )
-    ),
+        'wss://norma.education-services.ru/orders/all'
+      ),
+    }),
     getUserOrders: builder.query<TSocketState<TOrdersDataWithCounts>, void>({
-      ...socketObject<TOrdersDataWithCounts>(
+      query: () => '',
+      transformResponse: (response: TOrdersDataWithCounts) => ({
+        data: response,
+        status: 'initializing',
+        error: null,
+      }),
+      onCacheEntryAdded: socket<TOrdersDataWithCounts>(
         true,
         'wss://norma.education-services.ru/orders'
       ),

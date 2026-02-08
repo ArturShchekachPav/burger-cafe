@@ -12,15 +12,7 @@ export const UserOrders = (): JSX.Element => {
   const { data, isError, isLoading } = useGetUserOrdersQuery();
   const location = useLocation();
 
-  if (isLoading || !data?.data) {
-    return (
-      <div style={{ margin: 'auto' }} className="pt-25 pb-25">
-        <Preloader />
-      </div>
-    );
-  }
-
-  if (isError || !data || data.error) {
+  if (isError || data?.error) {
     return (
       <ErrorPage
         code="500"
@@ -30,9 +22,33 @@ export const UserOrders = (): JSX.Element => {
     );
   }
 
+  if (isLoading || !data) {
+    return (
+      <div style={{ margin: 'auto' }} className="pt-25 pb-25">
+        <Preloader />
+      </div>
+    );
+  }
+
+  if (!data.data.orders || data.data.orders.length === 0) {
+    return (
+      <p
+        style={{
+          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        className="text text_type_main-default"
+      >
+        У вас пока нет заказов
+      </p>
+    );
+  }
+
   return (
     <OrdersList>
-      {data.data.orders.map((order) => (
+      {[...data.data.orders].reverse().map((order) => (
         <li key={order.number}>
           <Link
             to={`${routes.USER_ORDERS}/${order.number}`}

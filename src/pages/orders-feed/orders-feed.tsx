@@ -15,15 +15,7 @@ export const OrdersFeed = (): JSX.Element => {
   const { data, isError, isLoading } = useGetFeedOrdersQuery();
   const location = useLocation();
 
-  if (isLoading || !data?.data) {
-    return (
-      <div style={{ margin: 'auto' }} className="pt-25 pb-25">
-        <Preloader />
-      </div>
-    );
-  }
-
-  if (isError || !data || data.error) {
+  if (isError || data?.error) {
     return (
       <ErrorPage
         code="500"
@@ -33,26 +25,52 @@ export const OrdersFeed = (): JSX.Element => {
     );
   }
 
+  if (isLoading || !data) {
+    return (
+      <div style={{ margin: 'auto' }} className="pt-25 pb-25">
+        <Preloader />
+      </div>
+    );
+  }
+
+  const NotFoundText = (
+    <p
+      style={{
+        textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+      className="text text_type_main-default"
+    >
+      Заказы не найдены
+    </p>
+  );
+
   return (
     <>
       <h1 className="text text_type_main-large mb-5">Лента заказов</h1>
       <div className={styles.page}>
-        <OrdersList>
-          {data.data.orders.map((order) => (
-            <li key={order.number}>
-              <Link
-                to={`${routes.ORDERS_FEED}/${order.number}`}
-                state={{ background: location }}
-                style={{
-                  textDecoration: 'none',
-                  color: '#fff',
-                }}
-              >
-                <OrderPreview order={order} />
-              </Link>
-            </li>
-          ))}
-        </OrdersList>
+        {!data.data.orders || data.data.orders.length === 0 ? (
+          NotFoundText
+        ) : (
+          <OrdersList>
+            {data.data.orders.map((order) => (
+              <li key={order.number}>
+                <Link
+                  to={`${routes.ORDERS_FEED}/${order.number}`}
+                  state={{ background: location }}
+                  style={{
+                    textDecoration: 'none',
+                    color: '#fff',
+                  }}
+                >
+                  <OrderPreview order={order} />
+                </Link>
+              </li>
+            ))}
+          </OrdersList>
+        )}
         <OrdersResults
           todayCount={data.data.totalToday}
           totalCount={data.data.total}

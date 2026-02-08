@@ -9,7 +9,7 @@ export const routes = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   PROFILE: '/profile',
-  USER_ORDERS: '/profile/orders/',
+  USER_ORDERS: '/profile/orders',
   USER_ORDER: '/profile/orders/:orderNumber',
   INGREDIENT: '/ingredients/:ingredientId',
   NOT_FOUND: '*',

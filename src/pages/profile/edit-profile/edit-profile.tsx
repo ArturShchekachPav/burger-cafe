@@ -1,11 +1,14 @@
+import { ErrorPage } from '@/components/error-page/error-page';
 import { ErrorText } from '@/components/error-text/error-text';
 import { useGetUserQuery, useUpdateUserMutation } from '@/services/user/api';
+import { routes } from '@/utils/constants';
 import { useForm } from '@/utils/useForm';
 import {
   Input,
   Button,
   EmailInput,
   PasswordInput,
+  Preloader,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useEffect, type ChangeEvent, type JSX } from 'react';
 
@@ -14,19 +17,15 @@ import type { TApiError, TUserWithPassword } from '@/types/types';
 import styles from './edit-profile.module.css';
 
 export function EditProfile(): JSX.Element {
-  const { data } = useGetUserQuery();
+  const { data, isLoading: userLoading, isError: userError } = useGetUserQuery();
+  const [updateUser, { isLoading: isUpdating, isError: isUpdateError, error }] =
+    useUpdateUserMutation();
 
-  if (!data) {
-    throw new Error('Пользователь не авторизован');
-  }
-
-  const user = data.user;
-
-  const [updateUser, { isLoading, isError, error }] = useUpdateUserMutation();
+  const user = data?.user;
 
   const { fields, setValue, setError, isValid, isDirty, handleSubmit, reset } = useForm({
-    email: user.email,
-    name: user.name,
+    email: user?.email ?? '',
+    name: user?.name ?? '',
     password: '',
   });
 
@@ -36,13 +35,11 @@ export function EditProfile(): JSX.Element {
     }
   }, [data]);
 
-  const isFormReady = isValid && isDirty && !isLoading;
+  const isFormReady = isValid && isDirty && !isUpdating;
 
   function onSubmit(updateUserData: TUserWithPassword): void {
     void updateUser(updateUserData);
   }
-
-  console.log(user, isDirty);
 
   function handleReset(): void {
     reset();
@@ -60,6 +57,24 @@ export function EditProfile(): JSX.Element {
   useEffect(() => {
     if (!fields.email.value) setError('email', 'Введите email');
   }, [fields.email.value]);
+
+  if (userError) {
+    return (
+      <ErrorPage
+        code="500"
+        content="Ошибка при загрузке данных пользователя. Пожалуйста, попробуйте позже"
+        backlinkTo={routes.HOME}
+      />
+    );
+  }
+
+  if (userLoading) {
+    return (
+      <div style={{ margin: 'auto' }} className="pt-25 pb-25">
+        <Preloader />
+      </div>
+    );
+  }
 
   return (
     <form
@@ -109,7 +124,7 @@ export function EditProfile(): JSX.Element {
       />
       {isDirty && (
         <div className={styles.buttons}>
-          <Button type="secondary" size="medium" disabled={isLoading} htmlType="reset">
+          <Button type="secondary" size="medium" disabled={isUpdating} htmlType="reset">
             Отмена
           </Button>
           <Button type="primary" size="medium" disabled={!isFormReady} htmlType="submit">
@@ -117,7 +132,7 @@ export function EditProfile(): JSX.Element {
           </Button>
         </div>
       )}
-      {isError && (
+      {isUpdateError && (
         <ErrorText extraClass="mt-8">
           {(error as TApiError).data.message === 'User with such email already exists'
             ? 'Пользователь с таким email уже зарегистрирован.'

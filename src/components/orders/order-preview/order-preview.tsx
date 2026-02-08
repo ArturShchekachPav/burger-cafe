@@ -4,6 +4,7 @@ import {
   CurrencyIcon,
   FormattedDate,
 } from '@krgaa/react-developer-burger-ui-components';
+import { useMatch } from 'react-router-dom';
 
 import type { TOrder } from '@/types/types';
 import type { JSX } from 'react';
@@ -12,11 +13,21 @@ import styles from './order-preview.module.css';
 
 export const OrderPreview = ({ order }: { order: TOrder }): JSX.Element => {
   const { data: ingredients } = useGetIngredientsQuery();
-
   const { totalCost, correctIngredients } = getOrderDetails(
     order,
     ingredients ? ingredients.obj : {}
   );
+
+  const inProfile = useMatch('/profile/*');
+
+  const statusText =
+    order.status === 'done'
+      ? 'Выполнен'
+      : order.status === 'pending'
+        ? 'Готовится'
+        : order.status === 'created'
+          ? 'Создан'
+          : '';
 
   return (
     <div className={`${styles.containter}`}>
@@ -27,8 +38,13 @@ export const OrderPreview = ({ order }: { order: TOrder }): JSX.Element => {
         </p>
       </header>
       <main>
-        <h2 className="text text_type_main-medium mb-6">{order.name}</h2>
-        <div className={styles.orderData}>
+        <h2 className="text text_type_main-medium">{order.name}</h2>
+        {inProfile && (
+          <p className={`text text_type_main-default ${styles.doneStatus} mt-2`}>
+            {statusText}
+          </p>
+        )}
+        <div className={`${styles.orderData} mt-6`}>
           <ul className={styles.ingredientsPreviews}>
             {correctIngredients
               .slice(0, correctIngredients.length > 6 ? 5 : correctIngredients.length)

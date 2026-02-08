@@ -51,6 +51,10 @@
   align-items: center;
 }
 
+.doneStatus {
+  color: #0cc;
+}
+
 .header {
   display: flex;
   justify-content: space-between;

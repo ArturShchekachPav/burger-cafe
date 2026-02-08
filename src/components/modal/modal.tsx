@@ -29,7 +29,7 @@ export function Modal({ onClose, children, title }: TModalProps): null | ReactPo
       <ModalOverlay onClick={onClose} />
       <div className={styles.content}>
         <header className={styles.header}>
-          {title && <h2 className="text text_type_main-large">{title}</h2>}
+          {title}
           <button onClick={onClose} className={styles.closeButton}>
             <CloseIcon type="primary" />
           </button>

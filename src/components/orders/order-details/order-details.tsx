@@ -30,7 +30,11 @@ const ErrorScreen = (
 export const OrderDetails = ({ modal }: { modal?: boolean }): JSX.Element | null => {
   const orderNumber = useParams<{ orderNumber: string }>().orderNumber;
 
-  const { isSearching, order, isError: orderError } = useOrderSearch(orderNumber);
+  const {
+    isSearching,
+    order,
+    isError: orderError,
+  } = useOrderSearch(Number(orderNumber));
   const {
     data: ingredients,
     isLoading: ingredientsLoading,
@@ -63,12 +67,14 @@ export const OrderDetails = ({ modal }: { modal?: boolean }): JSX.Element | null
   return (
     <div className={`${styles.container}`}>
       {!modal && (
-        <p className={`text text_type_digits-default mb-6 ${styles.number}`}>
-          #{order.number}
-        </p>
+        <p className={`text_type_digits-default ${styles.number}`}>#{order.number}</p>
       )}
-      <Heading className={`text text_type_main-medium mb-2`}>{order.name}</Heading>
-      <p className={`text text_type_main-default mb-15 ${styles.status}`}>
+      <Heading className={`text text_type_main-medium mb-2 ${modal ? 'mt-5' : 'mt-10'}`}>
+        {order.name}
+      </Heading>
+      <p
+        className={`text text_type_main-default mb-15 ${order.status === 'done' ? styles.status : ''}`}
+      >
         {statusText}
       </p>
       <section className="mb-10">

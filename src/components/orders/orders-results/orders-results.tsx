@@ -15,62 +15,30 @@ export const OrdersResults = ({
   inWorkOrders: TOrder['number'][];
 }): JSX.Element => {
   return (
-    <section className={`${styles.container}`}>
+    <section className={`${styles.container} custom-scroll`}>
       <div>
         <h5 className="text text_type_main-medium mb-6">Готовы:</h5>
-        <ul className={`${styles.ordersGroups}`}>
+        <ul className={`${styles.orderNumbers}`}>
           {doneOrders
-            .reduce((acc: TOrder['number'][][], orderNumber, index) => {
-              const groupIndex = Math.floor(index / 10);
-
-              if (!acc[groupIndex]) {
-                acc[groupIndex] = [];
-              }
-
-              acc[groupIndex].push(orderNumber);
-
-              return acc;
-            }, [])
-            .map((group, index) => (
-              <li key={index}>
-                <ul className={`${styles.orderNumbers}`}>
-                  {group.map((orderNumber) => (
-                    <li
-                      key={orderNumber}
-                      className={`text text_type_digits-default ${styles.done}`}
-                    >
-                      {orderNumber}
-                    </li>
-                  ))}
-                </ul>
+            .slice(0, doneOrders.length > 14 ? 14 : doneOrders.length)
+            .map((orderNumber) => (
+              <li
+                key={orderNumber}
+                className={`text text_type_digits-default ${styles.done}`}
+              >
+                {orderNumber}
               </li>
             ))}
         </ul>
       </div>
       <div>
         <h5 className="text text_type_main-medium  mb-6">В работе:</h5>
-        <ul className={`${styles.ordersGroups}`}>
+        <ul className={`${styles.orderNumbers}`}>
           {inWorkOrders
-            .reduce((acc: TOrder['number'][][], orderNumber, index) => {
-              const groupIndex = Math.floor(index / 10);
-
-              if (!acc[groupIndex]) {
-                acc[groupIndex] = [];
-              }
-
-              acc[groupIndex].push(orderNumber);
-
-              return acc;
-            }, [])
-            .map((group, index) => (
-              <li key={index}>
-                <ul className={`${styles.orderNumbers}`}>
-                  {group.map((orderNumber) => (
-                    <li key={orderNumber} className={`text text_type_digits-default`}>
-                      {orderNumber}
-                    </li>
-                  ))}
-                </ul>
+            .slice(0, inWorkOrders.length > 14 ? 14 : inWorkOrders.length)
+            .map((orderNumber) => (
+              <li key={orderNumber} className={`text text_type_digits-default`}>
+                {orderNumber}
               </li>
             ))}
         </ul>

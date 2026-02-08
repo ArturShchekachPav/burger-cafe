@@ -5,83 +5,81 @@ import {
 } from '@/services/orders/api';
 import { useAppSelector } from '@/services/store';
 import { getIsLoggedIn } from '@/services/user/slice';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { TOrder } from '@/types/types';
 
-export function useOrderSearch(orderNumber?: TOrder['number']): {
+export function useOrderSearch(orderNumber: TOrder['number']): {
   order: TOrder | null;
   isSearching: boolean;
   isError: boolean;
 } {
-  const { data: feedOrders, isLoading: feedLoading } = useGetFeedOrdersQuery();
-  const { data: userOrders, isLoading: userLoading } = useGetUserOrdersQuery();
-  const isLoggedIn = useAppSelector(getIsLoggedIn);
-  const [getOrder, { isLoading: orderLoading, isError: orderError }] =
+  const { data: feedOrders, isLoading: feedOrdersLoading } = useGetFeedOrdersQuery();
+  const { data: userOrders, isLoading: userOrdersLoading } = useGetUserOrdersQuery();
+  const [getOrder, { data: orderData, isLoading: orderLoading, isError: orderError }] =
     useLazyGetOrderQuery();
 
-  const [foundOrder, setFoundOrder] = useState<TOrder | null>(null);
-  const [isSearching, setIsSearching] = useState(true);
+  const isLoggedIn = useAppSelector(getIsLoggedIn);
 
-  const findOrderInData = useCallback(
-    (ordersData?: { orders: TOrder[] }) => {
-      if (!ordersData?.orders || !orderNumber) return null;
-
-      return ordersData.orders.find((order) => order.number === orderNumber) ?? null;
+  const findOrderInList = useCallback(
+    (orders: TOrder[] | undefined) => {
+      return orders?.find((o) => o.number === orderNumber) ?? null;
     },
     [orderNumber]
   );
 
+  const findOrderInSockets = useCallback(() => {
+    const fromFeed = findOrderInList(feedOrders?.data?.orders);
+    if (fromFeed) return fromFeed;
+
+    if (isLoggedIn) {
+      const fromUser = findOrderInList(userOrders?.data?.orders);
+      if (fromUser) return fromUser;
+    }
+
+    return null;
+  }, [feedOrders, userOrders, isLoggedIn, findOrderInList]);
+
+  const [order, setOrder] = useState<TOrder | null>(findOrderInSockets());
+
+  const shouldFetchOrder = useMemo(() => {
+    return Boolean(
+      !order &&
+        isLoggedIn &&
+        !orderLoading &&
+        !orderData &&
+        !feedOrdersLoading &&
+        !userOrdersLoading
+    );
+  }, [order, isLoggedIn, orderLoading, orderData, feedOrdersLoading, userOrdersLoading]);
+
   useEffect(() => {
-    if (!orderNumber) {
-      setIsSearching(false);
-      return;
+    if (order) return;
+
+    const foundOrder = findOrderInSockets();
+    if (foundOrder) {
+      setOrder(foundOrder);
     }
+  }, [findOrderInSockets, feedOrdersLoading, userOrdersLoading]);
 
-    if (foundOrder || !isSearching) return;
-
-    if (!feedLoading && feedOrders?.data) {
-      const order = findOrderInData(feedOrders.data);
-      if (order) {
-        setFoundOrder(order);
-        setIsSearching(false);
-        return;
-      }
-    }
-
-    if (isLoggedIn && !userLoading && userOrders?.data) {
-      const order = findOrderInData(userOrders.data);
-      if (order) {
-        setFoundOrder(order);
-        setIsSearching(false);
-        return;
-      }
-    }
-
-    if (isLoggedIn && !orderLoading && !foundOrder && !feedLoading && !userLoading) {
-      getOrder(orderNumber)
+  useEffect(() => {
+    if (shouldFetchOrder) {
+      void getOrder(String(orderNumber))
         .unwrap()
         .then((data) => {
-          const order = data.orders[0];
-          if (order) {
-            setFoundOrder(order);
-          }
-        })
-        .catch((error) => {
-          console.log('Error fetching order:', error);
-        })
-        .finally(() => {
-          setIsSearching(false);
+          setOrder(data.orders[0]);
         });
     }
+  }, [shouldFetchOrder]);
 
-    if (!isLoggedIn && !feedLoading && feedOrders?.data && !userLoading) {
-      setIsSearching(false);
-    }
-  }, [feedOrders?.data, userOrders?.data, feedLoading, userLoading, orderLoading]);
+  const isSearching = useMemo(() => {
+    if (order) return false;
+
+    return feedOrdersLoading || userOrdersLoading || orderLoading;
+  }, [order, feedOrdersLoading, userOrdersLoading, orderLoading]);
 
   return {
-    order: foundOrder,
+    order: order,
     isSearching,
     isError: orderError,
   };

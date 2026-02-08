@@ -46,7 +46,7 @@ export type TIngredientTypeSectionProps = {
 export type TModalProps = {
   onClose: () => void;
   children: JSX.Element;
-  title?: string;
+  title?: JSX.Element;
 };
 
 export type TCreateOrderData = {
@@ -101,7 +101,7 @@ export type TOrder = {
   ingredients: TIngredient['_id'][];
   _id: string;
   status: 'done' | 'created' | 'pending';
-  number: string;
+  number: number;
   createdAt: string;
   updatedAt: string;
   name: string;
@@ -118,7 +118,7 @@ export type TOrdersDataWithCounts = TOrdersData & {
 };
 
 export type TSocketState<Data> = {
-  data: null | Data;
+  data: Data;
   status: 'offline' | 'online' | 'connecting' | 'initializing';
   error: null | string;
 };

@@ -1,9 +1,9 @@
 .container {
   display: grid;
   place-content: baseline;
-  grid-template-columns: auto auto;
-  justify-content: space-between;
-  gap: 60px 24px;
+  grid-template-columns: 1fr 1fr;
+  justify-content: stretch;
+  gap: 60px;
   overflow: auto;
 }
 
@@ -20,16 +20,9 @@
 
 .orderNumbers {
   display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ordersGroups {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  gap: 20px;
+  grid-template-rows: repeat(7, fit-content(24px));
+  grid-auto-flow: column;
+  gap: 8px 12px;
   margin: 0;
   padding: 0;
   list-style: none;
