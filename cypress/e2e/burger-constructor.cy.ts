@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
-import { BASE_URL } from '@/utils/constants';
+import { SELECTORS } from 'cypress/utils/constants';
+import { getIngredientPreviewSelector } from 'cypress/utils/utils';
 
 import type { TGetIngredientsData, TIngredient, TCreateOrderData } from '@/types/types';
 
@@ -29,12 +30,14 @@ describe('burger constructor', () => {
       win.localStorage.setItem('accessToken', 'Bearer test-access-token');
     });
 
-    cy.intercept('GET', `${BASE_URL}auth/user`, { fixture: 'user.json' }).as('getUser');
-    cy.intercept('GET', `${BASE_URL}ingredients`, { fixture: 'ingredients.json' }).as(
+    cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' }).as('getUser');
+    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' }).as(
       'getIngredients'
     );
 
-    cy.visit('http://localhost:5173/');
+    cy.visit('baseUrl');
+
+    cy.get(SELECTORS.CONSTRUCTOR).as('constructor');
 
     cy.wait(['@getIngredients', '@getUser']);
   });
@@ -42,18 +45,18 @@ describe('burger constructor', () => {
   describe('initial display tests', () => {
     it('should display all ingredients', () => {
       Object.values(TEST_INGREDIENTS).forEach((ingredient) => {
-        cy.get(`[data-testid="ingredient-preview-${ingredient._id}"]`).should('exist');
+        cy.get(getIngredientPreviewSelector(ingredient._id)).should('exist');
       });
     });
 
     it('should display empty constructor', () => {
-      cy.get('[data-testid="constructor"]').should('exist');
+      cy.get('@constructor').should('exist');
 
-      cy.get('[data-testid="ingredients-list"]').should('not.exist');
-      cy.get('[data-testid="bun-top"]').should('not.exist');
-      cy.get('[data-testid="bun-bottom"]').should('not.exist');
+      cy.get(SELECTORS.INGREDIENTS_LIST).should('not.exist');
+      cy.get(SELECTORS.BUN_TOP).should('not.exist');
+      cy.get(SELECTORS.BUN_BOTTOM).should('not.exist');
 
-      cy.get('[data-testid="order-button"]').should('be.disabled');
+      cy.get(SELECTORS.ORDER_BUTTON).should('be.disabled');
     });
   });
 
@@ -61,43 +64,38 @@ describe('burger constructor', () => {
     it('should add bun to constructor', () => {
       const { bun1 } = TEST_INGREDIENTS;
 
-      cy.get(`[data-testid="ingredient-preview-${bun1._id}"]`)
-        .as('ingredient')
-        .trigger('dragstart');
-      cy.get('[data-testid="constructor"]').trigger('drop');
+      cy.addIngredientToConstructor(bun1._id);
 
-      cy.get('[data-testid="bun-top"]').should('contain', bun1.name);
-      cy.get('[data-testid="bun-bottom"]').should('contain', bun1.name);
+      cy.get(SELECTORS.BUN_TOP).should('contain', bun1.name);
+      cy.get(SELECTORS.BUN_BOTTOM).should('contain', bun1.name);
 
-      cy.get('@ingredient').find('.counter').contains('2');
+      cy.get(getIngredientPreviewSelector(bun1._id))
+        .find(SELECTORS.COUNTER)
+        .contains('2');
     });
 
     it('should add ingredient to constructor', () => {
       const { ingredient1 } = TEST_INGREDIENTS;
 
-      cy.get(`[data-testid="ingredient-preview-${ingredient1._id}"]`)
-        .as('ingredient')
-        .trigger('dragstart');
-      cy.get('[data-testid="constructor"]').trigger('drop');
+      cy.addIngredientToConstructor(ingredient1._id);
 
-      cy.get('[data-testid="ingredients-list"]')
+      cy.get(SELECTORS.INGREDIENTS_LIST)
         .should('exist')
         .and('contain', ingredient1.name);
 
-      cy.get('@ingredient').find('.counter').contains('1');
+      cy.get(getIngredientPreviewSelector(ingredient1._id))
+        .find(SELECTORS.COUNTER)
+        .contains('1');
     });
 
     it('should replace bun in constructor', () => {
       const { bun1, bun2 } = TEST_INGREDIENTS;
 
-      cy.get(`[data-testid="ingredient-preview-${bun1._id}"]`).trigger('dragstart');
-      cy.get('[data-testid="constructor"]').trigger('drop');
+      cy.addIngredientToConstructor(bun1._id);
+      cy.addIngredientToConstructor(bun2._id);
 
-      cy.get(`[data-testid="ingredient-preview-${bun2._id}"]`).trigger('dragstart');
-      cy.get('[data-testid="constructor"]').trigger('drop');
-
-      cy.get('[data-testid="bun-top"]').should('contain', bun2.name);
-      cy.get('[data-testid="bun-bottom"]').should('contain', bun2.name);
+      cy.get(SELECTORS.BUN_TOP).should('contain', bun2.name);
+      cy.get(SELECTORS.BUN_BOTTOM).should('contain', bun2.name);
     });
   });
 
@@ -105,20 +103,14 @@ describe('burger constructor', () => {
     beforeEach(() => {
       const { ingredient1, ingredient2 } = TEST_INGREDIENTS;
 
-      cy.get(`[data-testid="ingredient-preview-${ingredient1._id}"]`).trigger(
-        'dragstart'
-      );
-      cy.get('[data-testid="constructor"]').trigger('drop');
-      cy.get(`[data-testid="ingredient-preview-${ingredient2._id}"]`).trigger(
-        'dragstart'
-      );
-      cy.get('[data-testid="constructor"]').trigger('drop');
+      cy.addIngredientToConstructor(ingredient1._id);
+      cy.addIngredientToConstructor(ingredient2._id);
 
-      cy.get('[data-testid="ingredients-list"]').as('ingredientsList');
+      cy.get(SELECTORS.INGREDIENTS_LIST).as('ingredientsList');
     });
 
     it('should move ingredient in constructor', () => {
-      cy.get('[data-testid="ingredients-list"]').within(() => {
+      cy.get(SELECTORS.INGREDIENTS_LIST).within(() => {
         cy.get('@ingredientsList')
           .children()
           .should('have.length', 2)
@@ -138,7 +130,7 @@ describe('burger constructor', () => {
       cy.get('@ingredientsList')
         .children()
         .first()
-        .find('span.constructor-element__action')
+        .find(SELECTORS.DELETE_BUTTON)
         .click();
 
       cy.get('@ingredientsList')
@@ -153,33 +145,24 @@ describe('burger constructor', () => {
     beforeEach(() => {
       const { bun1, ingredient1 } = TEST_INGREDIENTS;
 
-      cy.get(`[data-testid="ingredient-preview-${bun1._id}"]`).trigger('dragstart');
-      cy.get('[data-testid="constructor"]').trigger('drop');
-      cy.get(`[data-testid="ingredient-preview-${ingredient1._id}"]`).trigger(
-        'dragstart'
-      );
-      cy.get('[data-testid="constructor"]').trigger('drop');
+      cy.addIngredientToConstructor(bun1._id);
+      cy.addIngredientToConstructor(ingredient1._id);
     });
 
     it('should enable order button when constructor is not empty', () => {
-      cy.get('[data-testid="order-button"]')
+      cy.get(SELECTORS.ORDER_BUTTON)
         .should('not.be.disabled')
         .and('contain', 'Оформить заказ');
     });
 
     it('should create order successfully', () => {
-      cy.intercept('POST', `${BASE_URL}orders/`, { fixture: 'order.json' }).as(
-        'createOrder'
-      );
+      cy.createOrder();
 
-      cy.get('[data-testid="order-button"]').click();
-      cy.wait('@createOrder');
-
-      cy.get('[data-testid="modal"]')
+      cy.get(SELECTORS.MODAL)
         .should('be.visible')
         .within(() => {
           cy.fixture('order.json').then((order: TCreateOrderData) => {
-            cy.get('[data-testid="order-number"]').should(
+            cy.get(SELECTORS.ORDER_NUMBER).should(
               'contain',
               order.order.number.toString()
             );
@@ -188,18 +171,13 @@ describe('burger constructor', () => {
     });
 
     it('should clear constructor after order', () => {
-      cy.intercept('POST', `${BASE_URL}orders/`, { fixture: 'order.json' }).as(
-        'createOrder'
-      );
+      cy.createOrder();
 
-      cy.get('[data-testid="order-button"]').click();
-      cy.wait('@createOrder');
+      cy.get(SELECTORS.INGREDIENTS_LIST).should('not.exist');
+      cy.get(SELECTORS.BUN_TOP).should('not.exist');
+      cy.get(SELECTORS.BUN_BOTTOM).should('not.exist');
 
-      cy.get('[data-testid="ingredients-list"]').should('not.exist');
-      cy.get('[data-testid="bun-top"]').should('not.exist');
-      cy.get('[data-testid="bun-bottom"]').should('not.exist');
-
-      cy.get('[data-testid="order-button"]').should('be.disabled');
+      cy.get(SELECTORS.ORDER_BUTTON).should('be.disabled');
     });
   });
 });
