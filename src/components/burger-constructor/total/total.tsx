@@ -8,6 +8,7 @@ import {
 } from '@/services/constructor/slice';
 import { useCreateOrderMutation } from '@/services/orders/api';
 import { useAppSelector } from '@/services/store';
+import { useGetUserQuery } from '@/services/user/api';
 import { getIsLoggedIn } from '@/services/user/slice';
 import { routes } from '@/utils/constants';
 import {
@@ -26,6 +27,7 @@ export function Total(): JSX.Element {
   const totalPrice = useAppSelector(getTotalPrice);
   const selectedIngredients = useAppSelector(getSelectedIngredientIds);
 
+  const { isLoading: isUserLoading } = useGetUserQuery();
   const [createOrder, { data: order, isLoading, isError, isSuccess, reset }] =
     useCreateOrderMutation();
 
@@ -54,7 +56,8 @@ export function Total(): JSX.Element {
           onClick={handleCreateOrder}
           size="large"
           type="primary"
-          disabled={!isAvailableToOrder || isLoading}
+          disabled={!isAvailableToOrder || isLoading || isUserLoading}
+          data-testid="order-button"
         >
           Оформить заказ
         </Button>

@@ -10,7 +10,7 @@ type TBurgerConstructorState = {
   ingredients: TBurgerConstructorIngredient[];
 };
 
-const initialState: TBurgerConstructorState = {
+export const initialState: TBurgerConstructorState = {
   ingredients: [],
   bun: null,
 };
@@ -34,13 +34,19 @@ export const burgerConstructorSlice = createSlice({
     },
     removeIngredient(
       state,
-      action: PayloadAction<Pick<TBurgerConstructorIngredient, '_id' | 'uuid'>>
+      action: PayloadAction<TBurgerConstructorIngredient['uuid']>
     ) {
-      const deleteUuid = action.payload.uuid;
+      const deleteUuid = action.payload;
 
       state.ingredients = state.ingredients.filter((ing) => ing.uuid !== deleteUuid);
     },
-    moveIngredient(state, action: PayloadAction<{ from: string; to: string }>) {
+    moveIngredient(
+      state,
+      action: PayloadAction<{
+        from: TBurgerConstructorIngredient['uuid'];
+        to: TBurgerConstructorIngredient['uuid'];
+      }>
+    ) {
       const { from, to } = action.payload;
 
       const fromIndex = state.ingredients.findIndex(({ uuid }) => uuid === from);

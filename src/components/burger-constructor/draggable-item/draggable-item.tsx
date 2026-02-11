@@ -12,15 +12,15 @@ import type { TBurgerConstructorIngredient } from '@/types/types';
 import styles from './draggable-item.module.css';
 
 export const DraggableItem = function DraggableItem({
-  ingredient: { _id, uuid, price, name, image },
+  ingredient: { uuid, price, name, image },
 }: {
   ingredient: TBurgerConstructorIngredient;
 }): JSX.Element {
   const dispatch = useAppDispatch();
 
   const onIngredientRemove = useCallback(
-    (ids: Pick<TBurgerConstructorIngredient, '_id' | 'uuid'>): void => {
-      dispatch(removeIngredient(ids));
+    (uuid: TBurgerConstructorIngredient['uuid']): void => {
+      dispatch(removeIngredient(uuid));
     },
     [dispatch]
   );
@@ -56,12 +56,13 @@ export const DraggableItem = function DraggableItem({
       ref={ref}
       className={styles.burger_ingredient}
       data-handler-id={handlerId}
+      data-testid={`constructor-ingredient-${uuid}`}
     >
       <button className={styles.drag_button}>
         <DragIcon type="primary" />
       </button>
       <ConstructorElement
-        handleClose={() => onIngredientRemove({ _id, uuid })}
+        handleClose={() => onIngredientRemove(uuid)}
         price={price}
         text={name}
         thumbnail={image}
