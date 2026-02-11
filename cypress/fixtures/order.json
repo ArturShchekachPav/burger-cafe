@@ -1,0 +1,77 @@
+{
+    "success": true,
+    "name": "Space spicy краторный бургер",
+    "order": {
+        "ingredients": [
+            {
+                "_id": "643d69a5c3f7b9001cfa093c",
+                "name": "Краторная булка N-200i",
+                "type": "bun",
+                "proteins": 80,
+                "fat": 24,
+                "carbohydrates": 53,
+                "calories": 420,
+                "price": 1255,
+                "image": "https://code.s3.yandex.net/react/code/bun-02.png",
+                "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
+                "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png",
+                "__v": 0
+            },
+            {
+                "_id": "643d69a5c3f7b9001cfa0942",
+                "name": "Соус Spicy-X",
+                "type": "sauce",
+                "proteins": 30,
+                "fat": 20,
+                "carbohydrates": 40,
+                "calories": 30,
+                "price": 90,
+                "image": "https://code.s3.yandex.net/react/code/sauce-02.png",
+                "image_mobile": "https://code.s3.yandex.net/react/code/sauce-02-mobile.png",
+                "image_large": "https://code.s3.yandex.net/react/code/sauce-02-large.png",
+                "__v": 0
+            },
+            {
+                "_id": "643d69a5c3f7b9001cfa0943",
+                "name": "Соус фирменный Space Sauce",
+                "type": "sauce",
+                "proteins": 50,
+                "fat": 22,
+                "carbohydrates": 11,
+                "calories": 14,
+                "price": 80,
+                "image": "https://code.s3.yandex.net/react/code/sauce-04.png",
+                "image_mobile": "https://code.s3.yandex.net/react/code/sauce-04-mobile.png",
+                "image_large": "https://code.s3.yandex.net/react/code/sauce-04-large.png",
+                "__v": 0
+            },
+            {
+                "_id": "643d69a5c3f7b9001cfa093c",
+                "name": "Краторная булка N-200i",
+                "type": "bun",
+                "proteins": 80,
+                "fat": 24,
+                "carbohydrates": 53,
+                "calories": 420,
+                "price": 1255,
+                "image": "https://code.s3.yandex.net/react/code/bun-02.png",
+                "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
+                "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png",
+                "__v": 0
+            }
+        ],
+        "_id": "698be963a64177001b32b60b",
+        "owner": {
+            "name": "Анов",
+            "email": "ashhekach@gmail.com",
+            "createdAt": "2026-01-09T11:57:57.039Z",
+            "updatedAt": "2026-01-10T21:57:41.106Z"
+        },
+        "status": "done",
+        "name": "Space spicy краторный бургер",
+        "createdAt": "2026-02-11T02:28:51.331Z",
+        "updatedAt": "2026-02-11T02:28:51.536Z",
+        "number": 100736,
+        "price": 2680
+    }
+}

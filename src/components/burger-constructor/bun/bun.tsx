@@ -25,8 +25,12 @@ export function Bun({
   );
 
   return type === 'top' ? (
-    <header className={styles.burger_bun}>{element}</header>
+    <header className={styles.burger_bun} data-testid={`bun-${type}`}>
+      {element}
+    </header>
   ) : (
-    <footer className={styles.burger_bun}>{element}</footer>
+    <footer className={styles.burger_bun} data-testid={`bun-${type}`}>
+      {element}
+    </footer>
   );
 }

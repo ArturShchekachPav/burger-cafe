@@ -7,7 +7,7 @@ type TUserState = {
   isLoggedIn: boolean;
 };
 
-const initialState: TUserState = {
+export const initialState: TUserState = {
   isAuthChecked: false,
   isLoggedIn: false,
 };

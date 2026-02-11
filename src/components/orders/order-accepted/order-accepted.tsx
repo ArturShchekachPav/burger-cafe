@@ -8,7 +8,10 @@ import styles from './order-accepted.module.css';
 export function OrderAccepted({ order }: { order: TCreateOrderData }): JSX.Element {
   return (
     <main className={styles.order_container}>
-      <h2 className={`${styles.order_text} mb-8 text text_type_digits-large`}>
+      <h2
+        className={`${styles.order_text} mb-8 text text_type_digits-large`}
+        data-testid="order-number"
+      >
         {order.order.number}
       </h2>
       <p className={`${styles.order_text} mb-15 text text_type_main-medium`}>

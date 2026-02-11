@@ -39,6 +39,7 @@ export const IngredientPreview = ({
       style={{ opacity: isDrag ? 0.5 : 1 }}
       onClick={handleIngredientDetailOpen}
       className={styles.ingredient_preview}
+      data-testid={`ingredient-preview-${_id}`}
     >
       <img
         className={`${styles.image} mb-2 pr-4 pl-4`}

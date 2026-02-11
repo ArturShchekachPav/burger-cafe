@@ -25,12 +25,16 @@ export function Modal({ onClose, children, title }: TModalProps): null | ReactPo
   }, []);
 
   return createPortal(
-    <section className={styles.modal}>
+    <section className={styles.modal} data-testid="modal">
       <ModalOverlay onClick={onClose} />
       <div className={styles.content}>
         <header className={styles.header}>
           {title}
-          <button onClick={onClose} className={styles.closeButton}>
+          <button
+            onClick={onClose}
+            className={styles.closeButton}
+            data-testid="modal-close-button"
+          >
             <CloseIcon type="primary" />
           </button>
         </header>

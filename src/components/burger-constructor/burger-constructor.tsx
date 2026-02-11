@@ -45,6 +45,7 @@ export const BurgerConstructor = (): JSX.Element => {
         }}
         ref={dropRef}
         className={styles.constructor_wrapper}
+        data-testid="constructor"
       >
         {bun && <Bun bun={bun} type="top" />}
         {ingredients.length === 0 && (
@@ -55,7 +56,10 @@ export const BurgerConstructor = (): JSX.Element => {
           </p>
         )}
         {ingredients.length > 0 && (
-          <ul className={`${styles.burger_ingredients} custom-scroll`}>
+          <ul
+            className={`${styles.burger_ingredients} custom-scroll`}
+            data-testid="ingredients-list"
+          >
             {ingredients.map((indredient) => (
               <li key={indredient.uuid}>
                 <DraggableItem ingredient={indredient} />
